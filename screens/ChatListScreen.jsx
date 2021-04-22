@@ -24,7 +24,6 @@ const ChatListScreen = () => {
     );
     return;
   }, []);
-  console.log(chat.length);
   if (!loading && chat.length > 0) {
     return <Loading />;
   } else
@@ -40,6 +39,8 @@ const ChatListScreen = () => {
                 name: item.user.fname,
                 id: item.user._id,
                 role: item.user.role,
+                chat_id: item._id,
+                from: "List",
               })
             }
           >

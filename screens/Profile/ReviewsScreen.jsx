@@ -14,7 +14,7 @@ const ReviewsScreen = () => {
   const [visible, setVisible] = useState(false);
   const [list, setList] = useState(null);
   const user = useSelector((state) => state.User.TOKKEN);
-  const info = useSelector((state) => state.User.info);
+  const review = useSelector((state) => state.Doctor.review);
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
@@ -28,18 +28,15 @@ const ReviewsScreen = () => {
         })
       );
     });
-    if (info) {
-      setList(info);
-    }
-  }, [info]);
+  }, [review]);
   if (!loading) {
     return <Loading />;
   } else
     return (
       <View style={{ backgroundColor: paper.colors.surface, flex: 1 }}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          {list ? (
-            list.map((item, i) => <ReviewCard key={i} />)
+          {review ? (
+            review.map((item, i) => <ReviewCard key={i} data={item} />)
           ) : (
             <Title>No Result</Title>
           )}

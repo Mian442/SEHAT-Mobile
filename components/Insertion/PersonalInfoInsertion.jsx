@@ -53,6 +53,7 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
       blur: false,
       keytype: "next",
       value: Info.date,
+      disabled: true,
     },
     {
       name: information.email,
@@ -63,6 +64,7 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
       blur: false,
       keytype: "next",
       value: Info.email,
+      disabled: true,
     },
     {
       name: information.ph,
@@ -73,6 +75,7 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
       blur: false,
       keytype: "next",
       value: Info.ph,
+      disabled: true,
     },
     {
       name: information.cnic,
@@ -83,6 +86,7 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
       ref: createRef(),
       blur: false,
       keytype: "next",
+      disabled: true,
     },
     {
       name: information.address,
@@ -93,6 +97,7 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
       blur: false,
       keytype: "next",
       value: Info.address,
+      disabled: false,
     },
     {
       name: information.martial_status,
@@ -103,6 +108,7 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
       blur: false,
       keytype: "next",
       value: Info.martial_status,
+      disabled: false,
     },
     {
       name: information.height,
@@ -113,6 +119,7 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
       blur: false,
       keytype: "next",
       value: Info.height,
+      disabled: false,
     },
     {
       name: information.blood,
@@ -123,6 +130,7 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
       blur: true,
       keytype: "done",
       value: Info.blood,
+      disabled: false,
     },
   ];
 
@@ -306,7 +314,7 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
                         : item.name.toLowerCase()
                     );
                   }}
-                  disabled={item.icon === "date" && true}
+                  disabled={item.disabled}
                   ref={item.ref}
                   onSubmitEditing={() => {
                     i + 1 !== 8 && list[i + 1].ref.current.focus();
@@ -331,7 +339,7 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
                   label={item.name}
                   value=""
                   style={{ flexGrow: 1, height: 52 }}
-                  disabled={item.icon === "date" && true}
+                  disabled={item.disabled}
                   onChangeText={(text) => {
                     handeldata(
                       text,

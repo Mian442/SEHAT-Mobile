@@ -11,9 +11,15 @@ import { v4 as uuidv4 } from "uuid";
 import { Toast } from "native-base";
 import { GET_DOC_ALL_INFORMATION } from "../redux/actions/DoctorAction";
 import Loading from "../components/Loading";
+import {
+  GET_MESSAGE_LIST,
+  GET_MESSAGE_BY_IDS,
+  MESSAGE,
+} from "../redux/actions/UserActions";
 const socket = io("http://192.168.8.100:3000/chat");
 const ChatScreen = () => {
   const paper = useTheme();
+  const message = useSelector((state) => state.User.message);
   const [receive, setReceive] = useState([]);
   const [text, setText] = useState();
   const [loading, setLoading] = useState(false);
@@ -24,192 +30,192 @@ const ChatScreen = () => {
   const { params } = useRoute();
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const doc = () => {
-    let d = doctors.filter((i) => i._id === params.id);
-    // setStatus(d[0].status);
-    return d[0];
-  };
   useEffect(() => {
     navigation.setOptions({
-      headerShown: false,
+      headerShown: true,
+      headerTitle: params.name,
     });
-    // if (doctors.length === 0) {
-    //   dispatch(
-    //     GET_DOC_ALL_INFORMATION(() => {
-    //       setTimeout(() => {
-    //         setLoading(true);
-    //       }, 3000);
-    //     })
-    //   );
-    // }
+
+    navigation.addListener("focus", () => {
+      setLoading(false);
+      if (params.from === "List") {
+        dispatch(
+          GET_MESSAGE_LIST(params.chat_id, () => {
+            setTimeout(() => {
+              setLoading(true);
+            }, 3000);
+          })
+        );
+      } else if (params.from === "Card") {
+        let data = { doctor: params.id, user: User._id };
+        dispatch(
+          GET_MESSAGE_BY_IDS(data, () => {
+            setTimeout(() => {
+              setLoading(true);
+            }, 3000);
+          })
+        );
+      }
+    });
+    if (message) {
+      setReceive(message.chat);
+      setStatus(message._id);
+    }
+  }, [message]);
+  useEffect(() => {
+    socket.on("roomCreated", (msg) => {
+      if (msg.user === User._id) {
+        dispatch(MESSAGE(msg));
+        let data = {
+          session_id: msg._id,
+          msg: {
+            text,
+            sender: {
+              name: User.fname,
+              id: User._id,
+              time: new Date(),
+            },
+            receiver: {
+              name: params.name,
+              id: params.id,
+              time: new Date(),
+            },
+          },
+        };
+        socket.emit("send", data);
+      }
+    });
     socket.on("receive", (msg) => {
-      // if(msg.)
-      // if (receive.length === 0) {
-
-      // }
-
-      setReceive([...receive, msg]);
-      console.log("o", receive.length);
-      setText("");
-      scrollRef?.scrollToEnd({ animated: true });
+      if (msg.session_id === status) {
+        setReceive([...receive, msg.msg]);
+        console.log("o2");
+        setText("");
+        scrollRef?.scrollToEnd({ animated: true });
+      }
     });
-    // return () => socket.close();
   }, [receive]);
-  // if (!loading) {
-  //   return <Loading />;
-  // } else
-  return (
-    <View
-      style={[styles.container, { backgroundColor: paper.colors.background }]}
-    >
+  if (!loading) {
+    return <Loading />;
+  } else
+    return (
       <View
-        style={{
-          backgroundColor: "#00e676",
-          height: "12.8%",
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "flex-end",
-          padding: "2.8%",
-        }}
+        style={[styles.container, { backgroundColor: paper.colors.background }]}
       >
-        <View
-          style={{
-            display: "flex",
-            alignItems: "center",
-            flexDirection: "row",
-          }}
+        <ScrollView
+          ref={(r) => setScrollRef(r)}
+          onContentSizeChange={() => scrollRef.scrollToEnd({ animated: true })}
         >
-          <Icon
-            name="arrow-back"
-            color="white"
-            onPress={() => navigation.goBack()}
-          />
-          <View style={{ marginLeft: "3%" }}>
-            <Title style={{ color: "white" }}>{params.name}</Title>
-            {/* {doc().status === "online" && (
-                <Text
+          <View
+            style={{
+              marginTop: 5,
+              flex: 1,
+              alignItems: "flex-end",
+              marginHorizontal: 25,
+            }}
+          >
+            {receive.map((i, index) => {
+              scrollRef?.scrollToEnd({ animated: true });
+              return (
+                <View
+                  key={index}
                   style={{
-                    color: "white",
+                    alignSelf:
+                      User._id === i.sender.id ? "flex-end" : "flex-start",
+                    backgroundColor:
+                      User._id === i.sender.id ? "#009688" : "#e0e0e0",
+
+                    justifyContent: "center",
+                    padding: 10,
+                    marginVertical: 10,
+                    borderRadius: 12,
                   }}
                 >
-                  {doc().status}
-                </Text>
-              )} */}
+                  <Text
+                    style={{
+                      textAlign: User._id === i.sender.id ? "left" : "right",
+                      color: User._id === i.sender.id ? "#fff" : "#000",
+                    }}
+                  >
+                    {User._id === i.sender.id ? "me" : i.sender.name}
+                  </Text>
+                  <Text
+                    style={{
+                      textAlign: User._id === i.sender.id ? "left" : "right",
+                      color: User._id === i.sender.id ? "#fff" : "#000",
+                    }}
+                  >
+                    {i.text}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
-        </View>
-      </View>
-
-      <ScrollView
-        ref={(r) => setScrollRef(r)}
-        onContentSizeChange={() => scrollRef.scrollToEnd({ animated: true })}
-      >
+        </ScrollView>
         <View
           style={{
-            marginTop: 5,
-            flex: 1,
-            alignItems: "flex-end",
-            marginHorizontal: 25,
+            flexDirection: "row",
+            margin: 10,
           }}
         >
-          {receive.map((i, index) => {
-            scrollRef.scrollToEnd({ animated: true });
-            return (
-              <View
-                key={index}
-                style={{
-                  alignSelf:
-                    User._id === i.sender.id ? "flex-end" : "flex-start",
-                  backgroundColor:
-                    User._id === i.sender.id ? "#009688" : "#e0e0e0",
-
-                  justifyContent: "center",
-                  padding: 10,
-                  marginVertical: 10,
-                  borderRadius: 12,
-                }}
-              >
-                <Text
-                  style={{
-                    textAlign: User._id === i.sender.id ? "left" : "right",
-                    color: User._id === i.sender.id ? "#fff" : "#000",
-                  }}
-                >
-                  {User._id === i.sender.id ? "me" : i.sender.name}
-                </Text>
-                <Text
-                  style={{
-                    textAlign: User._id === i.sender.id ? "left" : "right",
-                    color: User._id === i.sender.id ? "#fff" : "#000",
-                  }}
-                >
-                  {i.text}
-                </Text>
-              </View>
-            );
-          })}
+          <Input
+            placeholder="Type a message"
+            value={text}
+            inputContainerStyle={{
+              alignSelf: "center",
+              borderRadius: 25,
+              borderWidth: 2,
+              backgroundColor: paper.colors.surface,
+            }}
+            inputStyle={{ paddingLeft: 12, color: paper.colors.text }}
+            containerStyle={{
+              display: "flex",
+              flexDirection: "row",
+              flexShrink: 1,
+            }}
+            onChangeText={(text) => setText(text)}
+          />
+          <FAB
+            small
+            style={{ height: 40 }}
+            icon={(props) => (
+              <Icon
+                name="sc-telegram"
+                type="evilicon"
+                {...props}
+                size={28}
+                style={{ marginLeft: -2 }}
+              />
+            )}
+            onPress={() => {
+              if (!message) {
+                socket.emit("preparingRoom", {
+                  user: User._id,
+                  doctor: params.id,
+                });
+              } else {
+                let data = {
+                  session_id: message._id,
+                  msg: {
+                    text,
+                    sender: {
+                      name: User.fname,
+                      id: User._id,
+                      time: new Date(),
+                    },
+                    receiver: {
+                      name: params.name,
+                      id: params.id,
+                      time: new Date(),
+                    },
+                  },
+                };
+                socket.emit("send", data);
+              }
+            }}
+          />
         </View>
-      </ScrollView>
-      <View
-        style={{
-          flexDirection: "row",
-          margin: 10,
-        }}
-      >
-        <Input
-          placeholder="Type a message"
-          value={text}
-          inputContainerStyle={{
-            alignSelf: "center",
-            borderRadius: 25,
-            borderWidth: 2,
-            backgroundColor: paper.colors.surface,
-          }}
-          inputStyle={{ paddingLeft: 12, color: paper.colors.text }}
-          containerStyle={{
-            display: "flex",
-            flexDirection: "row",
-            flexShrink: 1,
-          }}
-          onChangeText={(text) => setText(text)}
-        />
-        <FAB
-          small
-          style={{ height: 40 }}
-          icon={(props) => (
-            <Icon
-              name="sc-telegram"
-              type="evilicon"
-              {...props}
-              size={28}
-              style={{ marginLeft: -2 }}
-            />
-          )}
-          onPress={() => {
-            let data = {
-              text,
-              sender: {
-                name: User.fname,
-                id: User._id,
-                time: new Date(),
-                role: User.role,
-              },
-              receiver: {
-                name: params.name,
-                id: params.id,
-                time: new Date(),
-                role: params.role,
-              },
-            };
-            if (!receive.length === 0) {
-              data["session_id"] = id;
-            }
-            // console.log(data);
-            socket.emit("send", data);
-          }}
-        />
       </View>
-    </View>
-  );
+    );
 };
 
 export default ChatScreen;

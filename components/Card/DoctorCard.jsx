@@ -127,6 +127,7 @@ const DoctorCard = ({ list, handelButton }) => {
                   name: list.user.fname,
                   id: list._id,
                   role: list.user.role,
+                  from: "Card",
                 });
               }}
             >

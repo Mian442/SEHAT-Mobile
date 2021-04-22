@@ -1,25 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import Faker from "faker";
-import DoctorCard from "../components/Card/DoctorCard";
+import DoctorCard from "./Card/DoctorCard";
 import { Title, TextInput, useTheme, Text } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import Loading from "../components/Loading";
-import { GET_DOC_ALL_INFORMATION } from "../redux/actions/DoctorAction";
-const FindDoctorScreen = () => {
+import Loading from "./Loading";
+import {
+  GET_DOC_ALL_INFORMATION,
+  GET_SPECIALTY,
+} from "../redux/actions/DoctorAction";
+const CategoryList = (props) => {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   const paper = useTheme();
   const dispatch = useDispatch();
-  const doctors = useSelector((state) => state.Doctor.allDoctor);
-  const User = useSelector((state) => state.User.TOKKEN);
-  const [doc, setDoc] = useState([]);
+  const { params } = useRoute();
+  const doctors = useSelector((state) => state.Doctor.category_list);
   const handlerGetDoctors = () => {
     setLoading(false);
+    navigation.setOptions({ headerTitle: params.name });
     dispatch(
-      GET_DOC_ALL_INFORMATION(() => {
+      GET_SPECIALTY(params.name, () => {
         setTimeout(() => {
           setLoading(true);
         }, 3000);
@@ -70,6 +73,6 @@ const FindDoctorScreen = () => {
     );
 };
 
-export default FindDoctorScreen;
+export default CategoryList;
 
 const styles = StyleSheet.create({});

@@ -193,7 +193,6 @@ export const USER_MEDICAL_HISTORY_UPDATE = (data, callback) => {
   return async (dispatch) => {
     await SEHAT.put("/medicalHistory/update", data)
       .then((response) => {
-        console.log(response.data);
         dispatch(INFORMATION(response.data));
         SUCCESS("Medical History Updated Successful!");
         callback();
@@ -369,6 +368,51 @@ export const GET_CHAT_LIST = (id, callback) => {
     await SEHAT.get(`/user/chatList/` + id)
       .then((response) => {
         dispatch(CHAT(response.data));
+        callback();
+      })
+      .catch((error) => {
+        if (error.response) {
+          ERROR(error.response.data.error);
+        } else if (error.request) {
+          ERROR("Bad Request!");
+        } else {
+          ERROR("Network Error!");
+        }
+        callback();
+      });
+  };
+};
+
+export const MESSAGE = (payload) => ({
+  type: ActionList.MESSAGE_LIST,
+  payload,
+});
+
+export const GET_MESSAGE_LIST = (id, callback) => {
+  return async (dispatch) => {
+    await SEHAT.get(`/user/messages/` + id)
+      .then((response) => {
+        dispatch(MESSAGE(response.data));
+        callback();
+      })
+      .catch((error) => {
+        if (error.response) {
+          ERROR(error.response.data.error);
+        } else if (error.request) {
+          ERROR("Bad Request!");
+        } else {
+          ERROR("Network Error!");
+        }
+        callback();
+      });
+  };
+};
+
+export const GET_MESSAGE_BY_IDS = (data, callback) => {
+  return async (dispatch) => {
+    await SEHAT.get(`/user/MessagesByIds/` + JSON.stringify(data))
+      .then((response) => {
+        dispatch(MESSAGE(response.data));
         callback();
       })
       .catch((error) => {

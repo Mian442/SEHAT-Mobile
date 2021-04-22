@@ -4,6 +4,7 @@ const initialState = {
   TOKKEN: null,
   info: null,
   chat: [],
+  message: null,
 };
 
 export default (state = initialState, { type, payload }) => {
@@ -18,6 +19,8 @@ export default (state = initialState, { type, payload }) => {
       return { ...state, info: payload };
     case ActionList.CHAT_LIST:
       return { ...state, chat: payload };
+    case ActionList.MESSAGE_LIST:
+      return { ...state, message: payload };
     default:
       return state;
   }

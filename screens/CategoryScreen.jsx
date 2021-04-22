@@ -284,6 +284,7 @@ const CategoryScreen = () => {
       icon: require("../assets/images/Category/plastic-surgery.png"),
     },
   ];
+
   useEffect(() => {
     setList(
       list.sort(function (a, b) {
@@ -336,7 +337,7 @@ const CategoryScreen = () => {
               key={i}
               style={{ opacity: 1 }}
               onPress={() => {
-                navigation.navigate("List", { name: item.name });
+                navigation.navigate("CategoryList", { name: item.name });
               }}
             >
               <Surface key={i} style={styles.surface}>

@@ -1,8 +1,9 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Avatar, Divider, Icon } from "react-native-elements";
-import { Card, Paragraph } from "react-native-paper";
+import { Card, Paragraph, Text } from "react-native-paper";
 import moment from "moment";
+import { Item } from "native-base";
 const AppointmentCard = ({ list, handelButton, role }) => {
   return (
     <View style={styles.container}>
@@ -78,9 +79,9 @@ const AppointmentCard = ({ list, handelButton, role }) => {
           }}
         >
           <Icon name="md-time" size={24} type="ionicon" color="#00e676" />
-          <Paragraph style={{ marginRight: 55, paddingLeft: 7 }}>
-            {moment(list.time).calendar().split("at ")[1]}
-          </Paragraph>
+          <Text style={{ marginRight: 20, paddingLeft: 7 }}>
+            {moment(list.time).format("hh:mm A")}
+          </Text>
           <Icon
             name="calendar-alt"
             size={24}

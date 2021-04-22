@@ -47,13 +47,13 @@ export default function HomeScreen() {
       text: "N/A",
       texttype: "Blood Pressure",
     },
-    {
-      name: "thermometer-3",
-      type: "font-awesome",
-      color: "#ffc107",
-      text: "N/A",
-      texttype: "Temperature",
-    },
+    // {
+    //   name: "thermometer-3",
+    //   type: "font-awesome",
+    //   color: "#ffc107",
+    //   text: "N/A",
+    //   texttype: "Temperature",
+    // },
     {
       name: "heart",
       type: "fontisto",
@@ -78,7 +78,9 @@ export default function HomeScreen() {
   ];
   return (
     <ScrollView
-      contentContainerStyle={[{ backgroundColor: paper.colors.background }]}
+      contentContainerStyle={[
+        { backgroundColor: paper.colors.background, flex: 1 },
+      ]}
     >
       <View style={{ margin: 14 }}>
         <View
@@ -116,7 +118,7 @@ export default function HomeScreen() {
             </Surface>
           </TouchableOpacity>
         </View>
-        <Surface
+        {/* <Surface
           style={[
             styles.shadow,
             { padding: 8, borderRadius: 10, marginBottom: 30 },
@@ -296,6 +298,7 @@ export default function HomeScreen() {
             ))}
           </ScrollView>
         </Surface>
+         */}
         <Surface
           style={[
             styles.shadow,
@@ -303,40 +306,48 @@ export default function HomeScreen() {
           ]}
         >
           <Title>Medical Record</Title>
-          <View
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              flexDirection: "row",
-              justifyContent: "space-evenly",
-            }}
-          >
-            {record.map((item, i) => (
-              <View
-                key={i}
-                style={{
-                  margin: 10,
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Icon
-                  name={item.name}
-                  type={item.type}
-                  color="#fff"
-                  size={28}
+          <>
+            <View
+              style={{
+                display: "flex",
+              }}
+            >
+              {record.map((item, i) => (
+                <View
+                  key={i}
                   style={{
-                    backgroundColor: item.color,
-                    padding: 8,
-                    borderRadius: 8,
-                    width: 50,
+                    margin: 15,
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "row",
                   }}
-                />
-                <Text style={{ marginHorizontal: 10 }}>{item.texttype}</Text>
-                <Text style={{ marginHorizontal: 10 }}>{item.text}</Text>
-              </View>
-            ))}
-          </View>
+                >
+                  <Icon
+                    name={item.name}
+                    type={item.type}
+                    color="#fff"
+                    size={28}
+                    style={{
+                      backgroundColor: item.color,
+                      padding: 8,
+                      borderRadius: 8,
+                      width: 50,
+                    }}
+                  />
+                  <Text style={{ marginHorizontal: 10 }}>{item.texttype}</Text>
+                  <Text
+                    style={{
+                      marginHorizontal: 10,
+                      flexGrow: 1,
+                      textAlign: "right",
+                    }}
+                  >
+                    {item.text}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </>
         </Surface>
       </View>
     </ScrollView>

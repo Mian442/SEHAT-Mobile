@@ -17,6 +17,7 @@ import MedicalStatusScreen from "../screens/Profile/MedicalStatusScreen";
 import PerceptionScreen from "../screens/Profile/PerceptionScreen";
 import BookAppointment from "../components/BookAppointment";
 import List from "../components/List";
+import CategoryList from "../components/CategoryList";
 import DoctorProfile from "../components/DoctorProfile";
 import RecordScreen from "../screens/Profile/RecordScreen";
 import ServiceScreen from "../screens/Record/ServiceScreen";
@@ -76,6 +77,11 @@ const StackNavigator = ({ navigation }) => {
         options={HeaderOption}
       />
       <Stack.Screen name="List" component={List} options={HeaderOption} />
+      <Stack.Screen
+        name="CategoryList"
+        component={CategoryList}
+        options={HeaderOption}
+      />
       <Stack.Screen
         name="Verify"
         component={DoctorVerificationScreen}

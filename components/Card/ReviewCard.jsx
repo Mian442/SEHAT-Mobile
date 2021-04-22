@@ -1,9 +1,37 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Avatar, Icon } from "react-native-elements";
-import { Text, Subheading, Paragraph, Caption } from "react-native-paper";
+import { Avatar, Icon, Rating } from "react-native-elements";
+import {
+  Text,
+  Subheading,
+  Paragraph,
+  Caption,
+  useTheme,
+} from "react-native-paper";
 
-const ReviewCard = () => {
+const ReviewCard = ({ data }) => {
+  const paper = useTheme();
+
+  const stars = () => {
+    let star = [];
+    for (var i = 0; i < data?.star; i++) {
+      if (i <= data?.star) {
+        star.push(
+          <Icon name="star" type="antdesign" color="#ffeb3b" size={16} />
+        );
+      } else {
+        star.push(
+          <Icon
+            name="star-outline"
+            type="antdesign"
+            color="#ffeb3b"
+            size={16}
+          />
+        );
+      }
+    }
+    return star;
+  };
   return (
     <View style={{ margin: 14 }}>
       <View style={[styles.row, { alignItems: "center" }]}>
@@ -16,21 +44,21 @@ const ReviewCard = () => {
           containerStyle={{}}
           title="A"
           source={
-            9 < 10
-              ? "Male" === "Male"
-                ? require(`../../assets/images/man.png`)
-                : require(`../../assets/images/woman.png`)
-              : { uri: "data:image/jpeg;base64," + "dd" }
+            data?.pic
+              ? { uri: "data:image/jpeg;base64," + data?.pic }
+              : data?.gender === "Male"
+              ? require(`../../assets/images/man.png`)
+              : require(`../../assets/images/woman.png`)
           }
         />
-        <Subheading style={{ paddingLeft: 8, flexGrow: 1 }}>Adnan</Subheading>
+        <Subheading style={{ paddingLeft: 8, flexGrow: 1 }}>
+          {data?.user_name}
+        </Subheading>
         <View style={[styles.row, { marginRight: 5 }]}>
           <Text style={{ marginRight: 5 }}>Rating:</Text>
-          <Icon name="star" type="antdesign" color="#ffeb3b" size={16} />
-          <Icon name="star" type="antdesign" color="#ffeb3b" size={16} />
-          <Icon name="star" type="antdesign" color="#ffeb3b" size={16} />
-          <Icon name="star" type="antdesign" color="#ffeb3b" size={16} />
-          <Caption>dse</Caption>
+          {stars().map((item, i) => (
+            <View key={i}>{item}</View>
+          ))}
         </View>
       </View>
       <View
@@ -41,12 +69,7 @@ const ReviewCard = () => {
           marginTop: 10,
         }}
       >
-        <Paragraph>
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ut tempora
-          laboriosam facilis aut, nobis modi doloremque vitae accusantium labore
-          possimus excepturi, eos vel dolor voluptatum, eveniet aspernatur nam
-          exercitationem quos!
-        </Paragraph>
+        <Paragraph>{data?.comment}</Paragraph>
       </View>
     </View>
   );

@@ -37,7 +37,6 @@ export default function useCachedResources() {
   };
   const _handleAppStateChange = async (nextAppState) => {
     let data = await User();
-    console.log(data)
     if(data){
       if (nextAppState === "active" && data.role.includes("doctor")) {
       status.emit("online", {
@@ -126,7 +125,6 @@ export default function useCachedResources() {
         };
       } catch (e) {
         // We might want to provide this error information to an error reporting service
-        //console.warn(e);
         alert("Error loading" + e.message);
       } finally {
         setTimeout(() => {

@@ -35,7 +35,7 @@ const SchedulesScreen = () => {
     { day: "Saturday", time: [], status: false },
     { day: "Sunday", time: [], status: false },
   ]);
-  const [date, setdate] = useState("");
+  const [date, setdate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState("time");
   const [day, setDay] = useState("Monday");
@@ -203,7 +203,7 @@ const SchedulesScreen = () => {
                       <Text
                         style={{ marginRight: 4, color: paper.colors.text }}
                       >
-                        {moment(time.time).calendar().split("at ")[1]}
+                        {moment(time.time).format("hh:mm A")}
                       </Text>
                       <Icon
                         name="close"

@@ -1,7 +1,7 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View, ScrollView, StyleSheet, Dimensions } from "react-native";
-import { Avatar, Icon } from "react-native-elements";
+import { Avatar, Icon, AirbnbRating } from "react-native-elements";
 import {
   Text,
   Button,
@@ -14,11 +14,17 @@ import {
   Title,
   useTheme,
   Chip,
+  TextInput,
 } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { GET_DOC_INFORMATION } from "../redux/actions/DoctorAction";
+import { date } from "yup/lib/locale";
+import {
+  DOC_ADD_REVIEW,
+  GET_DOC_INFORMATION,
+} from "../redux/actions/DoctorAction";
 import ReviewCard from "./Card/ReviewCard";
 import Loading from "./Loading";
+import SavingModel from "./SavingModel";
 
 const DoctorProfile = () => {
   const paper = useTheme();
@@ -27,6 +33,12 @@ const DoctorProfile = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const info = useSelector((state) => state.Doctor.info);
+  const User = useSelector((state) => state.User.TOKKEN);
+  const [model, setModel] = useState(false);
+  const [review, setReview] = useState({
+    star: 5,
+    comment: "I am very Satisfied with the Doctor Performance!",
+  });
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
     navigation.addListener("focus", () => {
@@ -39,6 +51,19 @@ const DoctorProfile = () => {
       );
     });
   }, [info]);
+
+  const avgRating = () => {
+    let rating = 0;
+    if (info?.review?.review.length > 0) {
+      for (var i of info?.review?.review) {
+        rating = rating + i.star;
+      }
+      rating = rating / info?.review?.review.length;
+      return rating;
+    }
+    rating = "No Reviews";
+  };
+
   if (!loading) {
     return <Loading />;
   } else
@@ -78,7 +103,9 @@ const DoctorProfile = () => {
                     <Subheading style={{ fontSize: 16, color: "white" }}>
                       {info?.specialty}
                     </Subheading>
-                    <Text style={{ marginLeft: 7, color: "white" }}>4.5</Text>
+                    <Text style={{ marginLeft: 7, color: "white" }}>
+                      {avgRating()}
+                    </Text>
                     <Icon
                       name="star"
                       type="antdesign"
@@ -113,7 +140,7 @@ const DoctorProfile = () => {
                   mode="outlined"
                   color="#fff"
                   style={{
-                    borderRadius: 25,
+                    borderRadius: 12,
                     borderWidth: 3,
                     borderColor: "white",
                   }}
@@ -550,16 +577,86 @@ const DoctorProfile = () => {
                   color="#009688"
                   style={{ marginRight: 5 }}
                 />
+                <Title>Add Reviews</Title>
+              </View>
+              <View>
+                <AirbnbRating
+                  count={5}
+                  reviews={[
+                    "Unsatisfied",
+                    "Terrible",
+                    "Bad",
+                    "Good",
+                    "Satisfied",
+                  ]}
+                  defaultRating={5}
+                  size={20}
+                  onFinishRating={(e) => setReview({ ...review, star: e })}
+                />
+                <TextInput
+                  label="Review"
+                  multiline={true}
+                  value={review.comment}
+                  right={
+                    <TextInput.Icon
+                      name="message-plus"
+                      style={{ marginRight: 5 }}
+                      color="#009688"
+                      onPress={() => {
+                        let data = {
+                          id: info._id,
+                          review: {
+                            ...review,
+                            date: new Date(),
+                            user_name: User.fname + " " + User.lname,
+                            gender: User.gender,
+                            pic: User.pic,
+                            userid: User._id,
+                          },
+                        };
+
+                        setModel(true);
+                        dispatch(
+                          DOC_ADD_REVIEW(data, () => {
+                            setTimeout(() => {
+                              setModel(false);
+                            }, 3000);
+                          })
+                        );
+                      }}
+                    />
+                  }
+                  onChangeText={(text) =>
+                    setReview({ ...review, comment: text })
+                  }
+                />
+              </View>
+            </Surface>
+
+            <Surface
+              style={[
+                styles.shawdow,
+                { marginBottom: 30, padding: 7, borderRadius: 10, flex: 1 },
+              ]}
+            >
+              <View style={[styles.row, { alignItems: "center" }]}>
+                <Icon
+                  name="rate-review"
+                  type="material"
+                  color="#009688"
+                  style={{ marginRight: 5 }}
+                />
                 <Title>Reviews</Title>
               </View>
               <Divider style={{ height: 2 }} />
               <View>
-                {info?.review?.map((item, i) => (
-                  <ReviewCard key={i} />
+                {info?.review?.review.map((item, i) => (
+                  <ReviewCard key={i} data={item} />
                 ))}
               </View>
             </Surface>
           </View>
+          <SavingModel visible={model} />
         </ScrollView>
       </View>
     );
