@@ -21,6 +21,7 @@ import {
   ADD_APPOINTMENT,
 } from "../redux/actions/DoctorAction";
 import SavingModel from "./SavingModel";
+import { Toast } from "native-base";
 
 const BookAppointment = () => {
   const paper = useTheme();
@@ -103,7 +104,6 @@ const BookAppointment = () => {
               </Title>
               <List.Accordion
                 title={Day ? Day.day : "Select the Day"}
-                left={(props) => <List.Icon {...props} icon="calendar-range" />}
                 expanded={expanded}
                 onPress={handlePress}
               >
@@ -115,18 +115,13 @@ const BookAppointment = () => {
                       handlePress();
                     }}
                     style={{
-                      backgroundColor: !item.status ? "#00e676" : "#ff1744",
-                      borderRadius: 10,
+                      borderColor: "grey",
+                      borderWidth: 1,
+                      borderRadius: 7,
                       margin: 10,
                     }}
                     key={i}
-                    titleStyle={{ color: "white" }}
                     title={item.day}
-                    right={(props) => (
-                      <Text style={{ marginTop: "2.5%", color: "#fff" }}>
-                        {!item.status ? "Un Booked" : "Booked"}
-                      </Text>
-                    )}
                   />
                 ))}
               </List.Accordion>
@@ -149,9 +144,17 @@ const BookAppointment = () => {
                       item.status ? (
                         <Button
                           key={index}
-                          title={moment(item.time).calendar().split("at ")[1]}
+                          title={moment(item.time).format("hh:mm A")}
                           containerStyle={{ margin: 10 }}
                           buttonStyle={{ backgroundColor: "#ff1744" }}
+                          onPress={() => {
+                            Toast.show({
+                              text: "Already Booked!",
+                              type: "danger",
+                              style: { margin: 10, borderRadius: 7 },
+                              textStyle: { textAlign: "center" },
+                            });
+                          }}
                         />
                       ) : index === time ? (
                         <Button
@@ -161,7 +164,7 @@ const BookAppointment = () => {
                             margin: 10,
                           }}
                           buttonStyle={{ backgroundColor: "#00e676" }}
-                          title={moment(item.time).calendar().split("at ")[1]}
+                          title={moment(item.time).format("hh:mm A")}
                           onPress={() => setTime(null)}
                         />
                       ) : (
@@ -173,7 +176,7 @@ const BookAppointment = () => {
                             borderColor: "#00e676",
                             borderWidth: 1,
                           }}
-                          title={moment(item.time).calendar().split("at ")[1]}
+                          title={moment(item.time).format("hh:mm A")}
                           titleStyle={{ color: "#00e676" }}
                           onPress={() => setTime(index)}
                         />
@@ -183,7 +186,7 @@ const BookAppointment = () => {
                 </View>
               )}
             </View>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{
                 display: "flex",
                 flexDirection: "row",
@@ -195,7 +198,7 @@ const BookAppointment = () => {
             >
               <Checkbox status={checked ? "checked" : "unchecked"} />
               <Text>Other Option</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             {checked && (
               <View style={{ margin: 10 }}>
@@ -242,6 +245,14 @@ const BookAppointment = () => {
                           title={item.time}
                           containerStyle={{ margin: 10 }}
                           buttonStyle={{ backgroundColor: "#ff1744" }}
+                          onPress={() => {
+                            Toast.show({
+                              text: "Already Booked!",
+                              type: "danger",
+                              style: { margin: 10, borderRadius: 7 },
+                              textStyle: { textAlign: "center" },
+                            });
+                          }}
                         />
                       ) : (
                         <Button
@@ -254,7 +265,6 @@ const BookAppointment = () => {
                           }}
                           title={item.time}
                           titleStyle={{ color: "#00e676" }}
-                          onPress={() => {}}
                         />
                       )
                     )}
@@ -270,28 +280,37 @@ const BookAppointment = () => {
                 buttonStyle={{ backgroundColor: "#651fff" }}
                 titleStyle={{ color: "white" }}
                 onPress={() => {
-                  let temp = { ...Day };
-                  temp.time = Day.time[time].time;
-                  let data = {
-                    id: user._id,
-                    doctor: {
-                      ...params,
-                    },
-                    user,
-                    appointment: {
-                      ...temp,
-                      index: time,
-                    },
-                  };
-                  setVisible(true);
-                  dispatch(
-                    ADD_APPOINTMENT(data, () => {
-                      setTimeout(() => {
-                        setVisible(false);
-                        navigation.goBack();
-                      }, 3000);
-                    })
-                  );
+                  if (!time) {
+                    Toast.show({
+                      text: "Please Select A Time",
+                      type: "danger",
+                      style: { margin: 10, borderRadius: 7 },
+                      textStyle: { textAlign: "center" },
+                    });
+                  } else {
+                    let temp = { ...Day };
+                    temp.time = Day.time[time].time;
+                    let data = {
+                      id: user._id,
+                      doctor: {
+                        ...params,
+                      },
+                      user,
+                      appointment: {
+                        ...temp,
+                        index: time,
+                      },
+                    };
+                    setVisible(true);
+                    dispatch(
+                      ADD_APPOINTMENT(data, () => {
+                        setTimeout(() => {
+                          setVisible(false);
+                          navigation.goBack();
+                        }, 3000);
+                      })
+                    );
+                  }
                 }}
                 title="Book Appointment"
                 icon={

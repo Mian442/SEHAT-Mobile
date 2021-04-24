@@ -4,7 +4,7 @@ import * as Font from "expo-font";
 import * as React from "react";
 import { AppState, LogBox } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { USER_STATUS_IN } from "../redux/actions/UserActions";
+import { USER_STATUS_IN, USER_STATUS_OUT } from "../redux/actions/UserActions";
 import {
   ALL_DOC_SOCKET_UPDATE,
   DOCTORS,
@@ -19,7 +19,7 @@ import io from "socket.io-client";
 import NetInfo from "@react-native-community/netinfo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Toast } from "native-base";
-const status = io("http://192.168.8.100:3000/status");
+const status = io("https://sehat.herokuapp.com/status");
 export default function useCachedResources() {
   const [isLoadingComplete, setLoadingComplete] = React.useState(true);
   const [connection, setConnection] = React.useState(true);
@@ -37,45 +37,43 @@ export default function useCachedResources() {
   };
   const _handleAppStateChange = async (nextAppState) => {
     let data = await User();
-    if(data){
+    if (data) {
       if (nextAppState === "active" && data.role.includes("doctor")) {
-      status.emit("online", {
-        id: data._id,
-        role: data.role,
-        name: data.fname,
-      });
+        status.emit("online", {
+          id: data._id,
+          role: data.role,
+          name: data.fname,
+        });
+      }
+      if (nextAppState === "background" && data.role.includes("doctor")) {
+        status.emit("offline", {
+          id: data._id,
+          role: data.role,
+          name: data.fname,
+        });
+      }
     }
-    if (nextAppState === "background" && data.role.includes("doctor")) {
-      status.emit("offline", {
-        id: data._id,
-        role: data.role,
-        name: data.fname,
-      });
-    }
-    }
-    
   };
 
   const _handleInternetChange = async (state) => {
     setConnection(state);
     let data = await User();
-    if(data){
+    if (data) {
       if (state.isConnected && data.role.includes("doctor")) {
-      status.emit("online", {
-        id: data._id,
-        role: data.role,
-        name: data.fname,
-      });
+        status.emit("online", {
+          id: data._id,
+          role: data.role,
+          name: data.fname,
+        });
+      }
+      if (!state.isConnected && data.role.includes("doctor")) {
+        status.emit("offline", {
+          id: data._id,
+          role: data.role,
+          name: data.fname,
+        });
+      }
     }
-    if (!state.isConnected && data.role.includes("doctor")) {
-      status.emit("offline", {
-        id: data._id,
-        role: data.role,
-        name: data.fname,
-      });
-    }
-    }
-    
   };
 
   const _handleStatusChange = (msg) => {
@@ -86,6 +84,7 @@ export default function useCachedResources() {
     async function loadResourcesAndDataAsync() {
       try {
         dispatch(USER_STATUS_IN());
+        // dispatch(USER_STATUS_OUT());
         // dispatch(DEL_LANGUAGE());
         dispatch(GET_LANGUAGE());
 

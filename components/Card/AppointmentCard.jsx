@@ -52,20 +52,25 @@ const AppointmentCard = ({ list, handelButton, role }) => {
           subtitleStyle={{ paddingLeft: 25 }}
           style={{ margin: 7 }}
           right={() =>
-            role === "patient" && (
-              <TouchableOpacity onPress={handelButton}>
-                <Icon
-                  name="delete"
-                  type="material-community"
-                  size={26}
-                  color="#ff1744"
-                  style={{ marginRight: 20 }}
-                />
-              </TouchableOpacity>
+            role === "patient" ? (
+              list.status === "pending" ? (
+                <TouchableOpacity onPress={handelButton}>
+                  <Icon
+                    name="delete"
+                    type="material-community"
+                    size={26}
+                    color="#ff1744"
+                    style={{ marginRight: 20 }}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <Text>Canceled</Text>
+              )
+            ) : list.status === "pending" ? null : (
+              <Text>Canceled</Text>
             )
           }
         />
-        <View style={{ flexDirection: "row", display: "flex" }}></View>
 
         <Divider style={{ height: 2, marginHorizontal: 20 }} />
 

@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Image } from "react-native-elements";
 import { Button, Paragraph, Text, Title, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
+import SavingModel from "../components/SavingModel";
 import { DOCTOR_VERIFICATION } from "../redux/actions/UserActions";
 
 const DoctorVerificationScreen = () => {
   const paper = useTheme();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.User.TOKKEN);
+  const [model, setModel] = useState(false);
   const lists = [
     "Allergist",
     "Andrologist",
@@ -93,6 +95,7 @@ const DoctorVerificationScreen = () => {
             color="#009688"
             onPress={() => {
               console.log({ id: user._id, licenseNo: "asdasd987a9s70" });
+              setModel(true);
               dispatch(
                 DOCTOR_VERIFICATION(
                   {
@@ -101,13 +104,18 @@ const DoctorVerificationScreen = () => {
                     specialty:
                       lists[Math.floor(Math.random() * (lists.length - 2))],
                   },
-                  () => {}
+                  () => {
+                    setTimeout(() => {
+                      setModel(false);
+                    }, 3000);
+                  }
                 )
               );
             }}
           >
             Submit
           </Button>
+          <SavingModel visible={model} title="Submitting" />
         </View>
       </View>
     );

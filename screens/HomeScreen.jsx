@@ -9,9 +9,10 @@ import {
 } from "react-native";
 import { Avatar, Icon, Image, ListItem } from "react-native-elements";
 import { Text, Subheading, Surface, Title, useTheme } from "react-native-paper";
-
+import { useDispatch, useSelector } from "react-redux";
 export default function HomeScreen() {
   const navigation = useNavigation();
+  const vitals = useSelector((state) => state.User.vitals);
   const paper = useTheme();
   const list = [
     {
@@ -44,7 +45,7 @@ export default function HomeScreen() {
       name: "blood-drop",
       type: "fontisto",
       color: "#ff1744",
-      text: "N/A",
+      text: vitals ? vitals.blood_pressure : "N/A",
       texttype: "Blood Pressure",
     },
     // {
@@ -58,21 +59,21 @@ export default function HomeScreen() {
       name: "heart",
       type: "fontisto",
       color: "#f50057",
-      text: "N/A",
+      text: vitals ? vitals.heart_beat : "N/A",
       texttype: "Heart Beat",
     },
     {
       name: "scale-bathroom",
       type: "material-community",
       color: "#2196f3",
-      text: "N/A",
+      text: vitals ? vitals.weight : "N/A",
       texttype: "Weight",
     },
     {
       name: "cubes",
       type: "font-awesome-5",
       color: "#009688",
-      text: "N/A",
+      text: vitals ? vitals.blood_glucose : "N/A",
       texttype: "Blood Glucose",
     },
   ];
@@ -305,7 +306,7 @@ export default function HomeScreen() {
             { padding: 8, borderRadius: 10, marginBottom: 30 },
           ]}
         >
-          <Title>Medical Record</Title>
+          <Title>Current Record</Title>
           <>
             <View
               style={{

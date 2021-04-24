@@ -5,8 +5,12 @@ import { Title, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import AppointmentCard from "../../components/Card/AppointmentCard";
 import Loading from "../../components/Loading";
-import { GET_APPOINTMENT } from "../../redux/actions/UserActions";
+import {
+  DELETE_APPOINTMENT,
+  GET_APPOINTMENT,
+} from "../../redux/actions/UserActions";
 import { GET_APPOINTMENT as DOC_APPOINTMENT } from "../../redux/actions/DoctorAction";
+import SavingModel from "../../components/SavingModel";
 
 export default function AppointmentScreen() {
   const paper = useTheme();
@@ -16,6 +20,7 @@ export default function AppointmentScreen() {
   const user = useSelector((state) => state.User.TOKKEN);
   const info = useSelector((state) => state.User.info);
   const [loading, setLoading] = useState(false);
+  const [model, setModel] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
     navigation.setOptions({ title: appointment });
@@ -55,7 +60,19 @@ export default function AppointmentScreen() {
               key={i}
               list={item}
               handelButton={() => {
-                console.log(item.name, i);
+                let data = {
+                  doctor_id: item.doctor_id,
+                  id: user._id,
+                  appointment: { day: item.day, time: item.time },
+                };
+                setModel(true);
+                dispatch(
+                  DELETE_APPOINTMENT(data, () => {
+                    setTimeout(() => {
+                      setModel(false);
+                    }, 3000);
+                  })
+                );
               }}
               role={params.data}
               pic={params.User.pic}
@@ -64,6 +81,7 @@ export default function AppointmentScreen() {
         ) : (
           <Title>No Result</Title>
         )}
+        <SavingModel visible={model} title="Canceling" />
       </ScrollView>
     );
 }

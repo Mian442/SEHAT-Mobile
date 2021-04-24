@@ -5,6 +5,7 @@ const initialState = {
   info: null,
   chat: [],
   message: null,
+  vitals: null,
 };
 
 export default (state = initialState, { type, payload }) => {
@@ -21,6 +22,8 @@ export default (state = initialState, { type, payload }) => {
       return { ...state, chat: payload };
     case ActionList.MESSAGE_LIST:
       return { ...state, message: payload };
+    case ActionList.USER_VITAL:
+      return { ...state, vitals: payload };
     default:
       return state;
   }

@@ -68,7 +68,7 @@ const DoctorCard = ({ list, handelButton }) => {
                 });
               }}
             >
-              {list.user.title} {list.user.fname}
+              {list.user.fname}
             </Text>
           }
           subtitle={list.specialty}

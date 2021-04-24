@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { Overlay } from "react-native-elements";
 import { ActivityIndicator, Title, useTheme } from "react-native-paper";
 
-const SavingModel = ({ visible }) => {
+const SavingModel = ({ visible, title = "Saving" }) => {
   const paper = useTheme();
   return (
     <Overlay
@@ -27,7 +27,7 @@ const SavingModel = ({ visible }) => {
           size={50}
           style={{ marginRight: 10 }}
         />
-        <Title style={{ alignSelf: "center" }}>Saving...</Title>
+        <Title style={{ alignSelf: "center" }}>{title}...</Title>
       </View>
     </Overlay>
   );

@@ -90,6 +90,7 @@ export const USER_STATUS_IN = () => {
     const token = await AsyncStorage.getItem("Token");
     if (token !== null) {
       dispatch(TOKEN(JSON.parse(token)));
+      dispatch(GET_USER_VITALS(JSON.parse(token)._id, () => {}));
       dispatch(IS_LOGGED_IN());
     }
   };
@@ -111,7 +112,9 @@ export const USER_INFORMATION = (type, id, callback) => {
   return async (dispatch) => {
     await SEHAT.get(`/user/${type}/${id}`)
       .then((response) => {
+        console.log(response.data.user);
         dispatch(INFORMATION(response.data));
+
         callback();
       })
       .catch((error) => {
@@ -130,7 +133,9 @@ export const ADD_USER_INFORMATION = (data, callback) => {
   return async (dispatch) => {
     await SEHAT.post("/information/add", data)
       .then((response) => {
+        console.log(response.data);
         dispatch(INFORMATION(response.data));
+        dispatch(TOKEN(response.data.user));
         SUCCESS("Information Updated Successful!");
         callback();
       })
@@ -152,6 +157,7 @@ export const USER_INFORMATION_UPDATE = (data, callback) => {
     await SEHAT.put("/information/update", data)
       .then((response) => {
         dispatch(INFORMATION(response.data));
+        dispatch(TOKEN(response.data.user));
         SUCCESS("Information Updated Successful!");
         callback();
       })
@@ -164,6 +170,31 @@ export const USER_INFORMATION_UPDATE = (data, callback) => {
           ERROR("Network Error!");
         }
         callback();
+      });
+  };
+};
+
+export const VITALS = (payload) => ({
+  type: ActionList.USER_VITAL,
+  payload,
+});
+
+export const GET_USER_VITALS = (id, callback) => {
+  return async (dispatch) => {
+    await SEHAT.get(`/user/vitals/${id}`)
+      .then((response) => {
+        dispatch(VITALS(response.data.vitals[response.data.vitals.length - 1]));
+        callback();
+      })
+      .catch((error) => {
+        console.error(error.message);
+        if (error.response) {
+          ERROR(error.response.data.error);
+        } else if (error.request) {
+          ERROR("Bad Request!");
+        } else {
+          ERROR("Network Error!");
+        }
       });
   };
 };
@@ -215,9 +246,9 @@ export const ADD_USER_VITAL = (data, callback) => {
   return async (dispatch) => {
     await SEHAT.post("/vitals/add/", data)
       .then((response) => {
-        dispatch(INFORMATION(response.data));
+        console.log(response.data);
+        dispatch(GET_USER_VITALS(data.id, callback));
         SUCCESS("Vital Added Successful!");
-        callback();
       })
       .catch((error) => {
         if (error.response) {
@@ -235,7 +266,7 @@ export const USER_VITAL_UPDATE = (data, callback) => {
   return async (dispatch) => {
     await SEHAT.put("/vitals/update/", data)
       .then((response) => {
-        dispatch(INFORMATION(response.data));
+        dispatch(VITALS(response.data.vitals[response.data.vitals.length - 1]));
         SUCCESS("Vital Added Successful!");
         callback();
       })
@@ -343,6 +374,27 @@ export const GET_APPOINTMENT = (id, callback) => {
     await SEHAT.get(`/appointment/user/` + id)
       .then((response) => {
         dispatch(INFORMATION(response.data));
+        callback();
+      })
+      .catch((error) => {
+        if (error.response) {
+          ERROR(error.response.data.error);
+        } else if (error.request) {
+          ERROR("Bad Request!");
+        } else {
+          ERROR("Network Error!");
+        }
+        callback();
+      });
+  };
+};
+
+export const DELETE_APPOINTMENT = (data, callback) => {
+  return async (dispatch) => {
+    await SEHAT.put(`/appointment/delete/`, data)
+      .then((response) => {
+        dispatch(INFORMATION(response.data));
+        SUCCESS("Appointment is Canceled!");
         callback();
       })
       .catch((error) => {

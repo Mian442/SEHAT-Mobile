@@ -30,16 +30,17 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
   const [show, setShow] = useState(false);
   const [visible, setVisible] = React.useState(false);
   const [Info, setInfo] = useState({
-    blood: info?.information?.blood,
-    height: info?.information?.height,
-    address: info?.information?.address,
-    cnic: info?.information?.cnic,
-    email: info?.email,
-    martial_status: info?.information?.martial_status,
-    date: info?.dob,
-    image: info?.pic,
+    blood: info?.blood,
+    height: info?.height,
+    address: info?.address,
+    cnic: info?.cnic,
+    email: info?.user?.email,
+    martial_status: info?.martial_status,
+    date: info.user.dob,
+    image: info?.user?.pic,
     visible: false,
-    ph: info?.ph?.toString(),
+    ph: info?.user?.ph?.toString(),
+    cnic: info?.cnic,
     mode: "date",
   });
   const dispatch = useDispatch();
@@ -82,11 +83,11 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
       icon: "id-card-alt",
       type: "font-awesome-5",
       color: "#cddc39",
-      value: info?.information?.cnic,
+      value: Info.cnic,
       ref: createRef(),
       blur: false,
       keytype: "next",
-      disabled: true,
+      disabled: false,
     },
     {
       name: information.address,
@@ -230,7 +231,7 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
             />
           </Left>
           <Body style={{ flexGrow: 1, justifyContent: "center" }}>
-            <Text>{info?.fname + " " + info?.lname}</Text>
+            <Text>{info?.user.fname + " " + info?.user.lname}</Text>
           </Body>
           <Right style={{ flexGrow: 2 }}>
             <Button
@@ -298,12 +299,14 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
               <Right style={{ flexGrow: 4, flexDirection: "row" }}>
                 <TextInput
                   label={item.name}
+                  mode="outlined"
+                  dense
                   value={
                     item.icon === "date"
                       ? new Date(item.value).toDateString()
                       : item.value
                   }
-                  style={{ flexGrow: 1, height: 52, width: 50 }}
+                  style={{ flexGrow: 1 }}
                   onChangeText={(text) => {
                     handeldata(
                       text,
@@ -338,7 +341,9 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
                 <TextInput
                   label={item.name}
                   value=""
-                  style={{ flexGrow: 1, height: 52 }}
+                  dense
+                  mode="outlined"
+                  style={{ flexGrow: 1 }}
                   disabled={item.disabled}
                   onChangeText={(text) => {
                     handeldata(
@@ -384,7 +389,7 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
         icon={
           <Icon
             name="save"
-            size={24}
+            size={18}
             color="#fff"
             style={{ margin: 7 }}
             type="font-awesome-5"
@@ -392,7 +397,7 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
         }
         onPress={() => {
           let data = {
-            id: info._id,
+            id: info.user._id,
             user: {
               dob: Info.date,
               email: Info.email,
@@ -408,22 +413,15 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
             },
           };
           showModal();
-          if (info.information === null) {
+          if (!info.cnic) {
             dispatch(
               ADD_USER_INFORMATION(data, () => {
-                setTimeout(() => {
-                  handelButton();
-                }, 1000);
-
                 hideModal();
               })
             );
           } else {
             dispatch(
               USER_INFORMATION_UPDATE(data, () => {
-                setTimeout(() => {
-                  handelButton();
-                }, 1000);
                 hideModal();
               })
             );
@@ -431,6 +429,11 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
         }}
         buttonStyle={{ margin: 10, backgroundColor: paper.colors.accent }}
         title="Save"
+      />
+      <Button
+        onPress={handelButton}
+        buttonStyle={{ margin: 10, backgroundColor: paper.colors.error }}
+        title="Close"
       />
       <Overlay
         isVisible={visible}

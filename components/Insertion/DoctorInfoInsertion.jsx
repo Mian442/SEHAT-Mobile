@@ -168,14 +168,16 @@ const DoctorInfoInsertion = ({ info, handelButton }) => {
           dispatch(
             DOC_INFORMATION_UPDATE(data, () => {
               hideModal();
-              setTimeout(() => {
-                handelButton();
-              }, 1000);
             })
           );
         }}
         buttonStyle={{ margin: 10, backgroundColor: paper.colors.accent }}
         title="Save"
+      />
+      <Button
+        onPress={handelButton}
+        buttonStyle={{ margin: 10, backgroundColor: paper.colors.error }}
+        title="Close"
       />
       <SavingModel visible={visible} />
     </ScrollView>

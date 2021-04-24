@@ -16,7 +16,7 @@ import {
   GET_MESSAGE_BY_IDS,
   MESSAGE,
 } from "../redux/actions/UserActions";
-const socket = io("http://192.168.8.100:3000/chat");
+const socket = io("https://sehat.herokuapp.com/chat");
 const ChatScreen = () => {
   const paper = useTheme();
   const message = useSelector((state) => state.User.message);

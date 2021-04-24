@@ -48,22 +48,24 @@ const FindDoctorScreen = () => {
               style={{ margin: 10, color: "#e0e0e0" }}
             />
             <Title style={{ margin: 10 }}>Doctor's</Title>
-            {doctors.map((item, i) => (
-              <DoctorCard
-                list={item}
-                handelButton={() => {
-                  navigation.navigate("BookAppointment", {
-                    _id: item._id,
-                    fname: item.user.fname,
-                    lname: item.user.lname,
-                    pic: item.user.pic,
-                    gender: item.user.gender,
-                    specialty: item.specialty,
-                  });
-                }}
-                key={i}
-              />
-            ))}
+            {doctors
+              .filter((item) => item._id !== User._id)
+              .map((item, i) => (
+                <DoctorCard
+                  list={item}
+                  handelButton={() => {
+                    navigation.navigate("BookAppointment", {
+                      _id: item._id,
+                      fname: item.user.fname,
+                      lname: item.user.lname,
+                      pic: item.user.pic,
+                      gender: item.user.gender,
+                      specialty: item.specialty,
+                    });
+                  }}
+                  key={i}
+                />
+              ))}
           </View>
         </ScrollView>
       </View>

@@ -15,70 +15,70 @@ const PersonalInformation = ({ info, handelButton }) => {
       icon: "ruler",
       type: "entypo",
       color: "#ffc107",
-      value: new Date().getFullYear() - new Date(info?.dob).getFullYear(),
+      value: new Date().getFullYear() - new Date(info?.user.dob).getFullYear(),
     },
     {
       name: information.DOB,
       icon: "date",
       type: "fontisto",
       color: "#00e676",
-      value: new Date(info?.dob).toDateString(),
+      value: new Date(info?.user.dob).toDateString(),
     },
     {
       name: information.email,
       icon: "md-mail",
       type: "ionicon",
       color: "#9e9e9e",
-      value: info?.email,
+      value: info?.user.email,
     },
     {
       name: information.ph,
       icon: "phone",
       type: "font-awesome",
       color: "#2e7d32",
-      value: info?.ph,
+      value: info?.user.ph,
     },
     {
       name: information.cnic,
       icon: "id-card-alt",
       type: "font-awesome-5",
       color: "#cddc39",
-      value: info?.information?.cnic,
+      value: info?.cnic,
     },
     {
       name: information.address,
       icon: "address-book-o",
       type: "font-awesome",
       color: "#673ab7",
-      value: info?.information?.address,
+      value: info?.address,
     },
     {
       name: information.gender,
       icon: "genderless",
       type: "font-awesome",
       color: "#009688",
-      value: info?.gender,
+      value: info?.user.gender,
     },
     {
       name: information.martial_status,
       icon: "human-male-female",
       type: "material-community",
       color: paper.dark ? "#fff" : "#000",
-      value: info?.information?.martial_status,
+      value: info?.martial_status,
     },
     {
       name: information.height,
       icon: "human-male-height",
       type: "material-community",
       color: "#ff3d00",
-      value: info?.information?.height,
+      value: info?.height,
     },
     {
       name: information.blood,
       icon: "blood-drop",
       type: "fontisto",
       color: "#ff1744",
-      value: info?.information?.blood,
+      value: info?.blood,
     },
   ];
 
@@ -148,16 +148,16 @@ const PersonalInformation = ({ info, handelButton }) => {
               activeOpacity={0.7}
               containerStyle={{}}
               source={
-                info?.pic === null
-                  ? info?.gender === "Male"
+                info?.user.pic === null
+                  ? info?.user.gender === "Male"
                     ? require(`../../assets/images/man.png`)
                     : require(`../../assets/images/woman.png`)
-                  : { uri: "data:image/jpeg;base64," + info?.pic }
+                  : { uri: "data:image/jpeg;base64," + info?.user.pic }
               }
             />
           </Left>
           <Body style={{ flexGrow: 1, justifyContent: "center" }}>
-            <Title>{info?.fname + " " + info?.lname}</Title>
+            <Title>{info?.user.fname + " " + info?.user.lname}</Title>
           </Body>
         </CardItem>
       </Card>

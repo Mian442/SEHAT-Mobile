@@ -5,7 +5,10 @@ import { ActivityIndicator, FAB, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import VitalCard from "../../components/Card/VitalCard";
 import VitalCardInsertion from "../../components/Insertion/VitalCardInsertion";
-import { USER_INFORMATION } from "../../redux/actions/UserActions";
+import {
+  GET_USER_VITALS,
+  USER_INFORMATION,
+} from "../../redux/actions/UserActions";
 
 const VitalScreen = () => {
   const list = [1, 2, 34, 5];
@@ -13,7 +16,7 @@ const VitalScreen = () => {
   const paper = useTheme();
   const navigation = useNavigation();
   const { vital } = useSelector((state) => state.Language.Lang);
-  const info = useSelector((state) => state.User.info);
+  const vitals = useSelector((state) => state.User.vitals);
   const user = useSelector((state) => state.User.TOKKEN);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -22,14 +25,14 @@ const VitalScreen = () => {
     navigation.addListener("focus", () => {
       setLoading(false);
       dispatch(
-        USER_INFORMATION("vitals", user._id, () => {
+        GET_USER_VITALS(user._id, () => {
           setTimeout(() => {
             setLoading(true);
           }, 3000);
         })
       );
     });
-  }, [info, vital]);
+  }, [vitals, vital]);
   if (!loading) {
     return (
       <View
@@ -60,9 +63,7 @@ const VitalScreen = () => {
         {!edit ? (
           <VitalCard
             id={user?._id}
-            vital_info={
-              info?.vitals?.length > 0 && info?.vitals[info?.vitals.length - 1]
-            }
+            vital_info={vitals !== null && vitals}
             handelButton={() => setedit(!edit)}
           />
         ) : (

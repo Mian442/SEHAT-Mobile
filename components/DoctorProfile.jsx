@@ -59,7 +59,7 @@ const DoctorProfile = () => {
         rating = rating + i.star;
       }
       rating = rating / info?.review?.review.length;
-      return rating;
+      return Math.round(rating);
     }
     rating = "No Reviews";
   };
@@ -91,29 +91,7 @@ const DoctorProfile = () => {
                 title={info?.user.fname}
                 titleStyle={{ color: "white" }}
                 subtitleStyle={{ color: "white" }}
-                subtitle={
-                  <View
-                    style={{
-                      margin: 10,
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Subheading style={{ fontSize: 16, color: "white" }}>
-                      {info?.specialty}
-                    </Subheading>
-                    <Text style={{ marginLeft: 7, color: "white" }}>
-                      {avgRating()}
-                    </Text>
-                    <Icon
-                      name="star"
-                      type="antdesign"
-                      color="#ffeb3b"
-                      size={16}
-                    />
-                  </View>
-                }
+                subtitle={info?.specialty}
                 right={() => (
                   <Avatar
                     rounded
@@ -130,6 +108,19 @@ const DoctorProfile = () => {
               />
               <View
                 style={{
+                  marginHorizontal: 7,
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ marginLeft: 7, color: "white" }}>
+                  Rating: {avgRating()}
+                </Text>
+                <Icon name="star" type="antdesign" color="#ffeb3b" size={16} />
+              </View>
+              <View
+                style={{
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-evenly",
@@ -144,20 +135,20 @@ const DoctorProfile = () => {
                     borderWidth: 3,
                     borderColor: "white",
                   }}
-                  onPress={() =>
+                  onPress={() => {
                     navigation.navigate("BookAppointment", {
-                      doctor_id: info?._id,
+                      _id: info?._id,
                       name: info?.user.fname,
                       lname: info?.user.lname,
                       pic: info?.user.pic,
                       gender: info?.user.gender,
                       specialty: info?.specialty,
-                    })
-                  }
+                    });
+                  }}
                 >
                   Book Appointment
                 </Button>
-                <Icon
+                {/* <Icon
                   name="phone"
                   type="font-awesome"
                   color="#FFF"
@@ -188,7 +179,7 @@ const DoctorProfile = () => {
                       fname: info?.user.fname,
                     })
                   }
-                />
+                /> */}
               </View>
             </View>
           </View>

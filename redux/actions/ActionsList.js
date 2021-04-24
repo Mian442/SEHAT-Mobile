@@ -5,6 +5,7 @@ export const ERROR_NO = "ERROR_NO";
 
 export const USER_TOKEN = "USER_TOKEN";
 export const USER_INFORMATION = "USER_INFORMATION";
+export const USER_VITAL = "USER_VITAL";
 export const IS_LOGGED_IN = "IS_LOGGED_IN";
 export const IS_LOGGED_OUT = "IS_LOGGED_OUT";
 export const CHAT_LIST = "CHAT_LIST";
