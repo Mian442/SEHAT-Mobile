@@ -139,7 +139,7 @@ const StackNavigator = ({ navigation }) => {
         options={HeaderOption}
       />
       <Stack.Screen
-        name="Perception"
+        name="Prescription"
         component={PerceptionScreen}
         options={HeaderOption}
       />
@@ -189,7 +189,7 @@ const StackNavigator = ({ navigation }) => {
         options={HeaderOption}
       />
       <Stack.Screen
-        name="Give Perception"
+        name="Give Prescription"
         component={GivePerceptionScreen}
         options={HeaderOption}
       />

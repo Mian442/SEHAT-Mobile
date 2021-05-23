@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Icon } from "react-native-elements";
 import { SET_LANGUAGE } from "../redux/actions/LanguageAction";
 import { USER_STATUS_OUT } from "../redux/actions/UserActions";
+import { ScrollView } from "react-native";
 
 export default function DrawerContent(props) {
   const iseng = useSelector((state) => state.Language.ISENGLISH);
@@ -89,114 +90,116 @@ export default function DrawerContent(props) {
   return (
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView {...props} showsVerticalScrollIndicator={false}>
-        <View style={styles.drawerContent}>
-          <View style={{ margin: 10 }}>
-            <View style={{ flexDirection: "row", marginTop: 15 }}>
-              <Avatar.Image
-                source={require("../assets/images/man.png")}
-                size={50}
-              />
-              <View style={{ marginLeft: 15, flexDirection: "column" }}>
-                <Title style={styles.title}>{User.name}</Title>
-                <Caption style={styles.caption}>@{User.role}</Caption>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.drawerContent}>
+            <View style={{ margin: 10 }}>
+              <View style={{ flexDirection: "row", marginTop: 15 }}>
+                <Avatar.Image
+                  source={require("../assets/images/man.png")}
+                  size={50}
+                />
+                <View style={{ marginLeft: 15, flexDirection: "column" }}>
+                  <Title style={styles.title}>{User.name}</Title>
+                  <Caption style={styles.caption}>@{User.role}</Caption>
+                </View>
+              </View>
+              <View style={styles.row}>
+                <View style={styles.section}>
+                  <Paragraph style={[styles.paragraph, styles.caption]}>
+                    80
+                  </Paragraph>
+                  <Caption style={styles.caption}>Following</Caption>
+                </View>
+                <View style={styles.section}>
+                  <Paragraph style={[styles.paragraph, styles.caption]}>
+                    100
+                  </Paragraph>
+                  <Caption style={styles.caption}>Followers</Caption>
+                </View>
               </View>
             </View>
-            <View style={styles.row}>
-              <View style={styles.section}>
-                <Paragraph style={[styles.paragraph, styles.caption]}>
-                  80
-                </Paragraph>
-                <Caption style={styles.caption}>Following</Caption>
-              </View>
-              <View style={styles.section}>
-                <Paragraph style={[styles.paragraph, styles.caption]}>
-                  100
-                </Paragraph>
-                <Caption style={styles.caption}>Followers</Caption>
-              </View>
-            </View>
-          </View>
-          <Divider style={{ backgroundColor: "gray", margin: 7 }} />
-          <Drawer.Section style={styles.drawerSection} {...props}>
-            {list.map((item, i) => (
+            <Divider style={{ backgroundColor: "gray", margin: 7 }} />
+            <Drawer.Section style={styles.drawerSection} {...props}>
+              {list.map((item, i) => (
+                <TouchableRipple
+                  onPress={() => {
+                    if (item.name === "Sign Out") {
+                      props.navigation.closeDrawer();
+                      dispatch(USER_STATUS_OUT());
+                    } else props.navigation.navigate(item.screen);
+                  }}
+                  style={{ paddingVertical: 6 }}
+                  key={i}
+                >
+                  <View
+                    style={[
+                      styles.row,
+                      {
+                        marginHorizontal: 17,
+                        marginVertical: 7,
+                        justifyContent: "center",
+                      },
+                    ]}
+                  >
+                    <Icon type={item.type} name={item.icon} color="#009688" />
+                    <Text
+                      style={{
+                        paddingLeft: 32,
+                        color: "#009688",
+                        flexGrow: 1,
+                        textAlign: isSwitchOn ? "left" : "right",
+                        fontSize: 16,
+                      }}
+                    >
+                      {item.name}
+                    </Text>
+                  </View>
+                </TouchableRipple>
+
+                //<DrawerItem
+                //       key={i + 11}
+                //       {...props}
+                //       icon={({ color, size }) => (
+                //         <Icon
+                //           type={item.type}
+                //           name={item.icon}
+                //           color={color}
+                //           size={size}
+                //         />
+                //       )}
+                //       label={item.name}
+                //       onPress={() => {
+                //         if (item.name === "Sign out") {
+                //           props.navigation.closeDrawer();
+                //           dispatch(USER_STATUS_OUT());
+                //         } else props.navigation.navigate(item.screen);
+                //       }}
+                //     />
+              ))}
+            </Drawer.Section>
+            <Drawer.Section title={drawer.preference}>
               <TouchableRipple
                 onPress={() => {
-                  if (item.name === "Sign Out") {
-                    props.navigation.closeDrawer();
-                    dispatch(USER_STATUS_OUT());
-                  } else props.navigation.navigate(item.screen);
+                  dispatch(SET_LANGUAGE(!isSwitchOn ? "English" : "Urdu"));
+                  setIsSwitchOn(!isSwitchOn);
                 }}
-                style={{ paddingVertical: 6 }}
-                key={i}
               >
-                <View
-                  style={[
-                    styles.row,
-                    {
-                      marginHorizontal: 17,
-                      marginVertical: 7,
-                      justifyContent: "center",
-                    },
-                  ]}
-                >
-                  <Icon type={item.type} name={item.icon} color="#009688" />
-                  <Text
-                    style={{
-                      paddingLeft: 32,
-                      color: "#009688",
-                      flexGrow: 1,
-                      textAlign: isSwitchOn ? "left" : "right",
-                      fontSize: 16,
-                    }}
-                  >
-                    {item.name}
+                <View style={styles.preference}>
+                  <Text style={{ color: "#ff1744" }}>
+                    {drawer.language_change}
                   </Text>
+                  <View
+                    pointerEvents="none"
+                    style={{ display: "flex", flexDirection: "row" }}
+                  >
+                    <Text>{isSwitchOn ? "English" : "اردو"}</Text>
+                    <Switch value={!isSwitchOn} />
+                  </View>
                 </View>
               </TouchableRipple>
-
-              //<DrawerItem
-              //       key={i + 11}
-              //       {...props}
-              //       icon={({ color, size }) => (
-              //         <Icon
-              //           type={item.type}
-              //           name={item.icon}
-              //           color={color}
-              //           size={size}
-              //         />
-              //       )}
-              //       label={item.name}
-              //       onPress={() => {
-              //         if (item.name === "Sign out") {
-              //           props.navigation.closeDrawer();
-              //           dispatch(USER_STATUS_OUT());
-              //         } else props.navigation.navigate(item.screen);
-              //       }}
-              //     />
-            ))}
-          </Drawer.Section>
-          <Drawer.Section title={drawer.preference}>
-            <TouchableRipple
-              onPress={() => {
-                dispatch(SET_LANGUAGE(!isSwitchOn ? "English" : "Urdu"));
-                setIsSwitchOn(!isSwitchOn);
-              }}
-            >
-              <View style={styles.preference}>
-                <Text style={{ color: "#ff1744" }}>
-                  {drawer.language_change}
-                </Text>
-                <View
-                  pointerEvents="none"
-                  style={{ display: "flex", flexDirection: "row" }}
-                >
-                  <Text>{isSwitchOn ? "English" : "اردو"}</Text>
-                  <Switch value={!isSwitchOn} />
-                </View>
-              </View>
-            </TouchableRipple>
-          </Drawer.Section>
-        </View>
+            </Drawer.Section>
+          </View>
+        </ScrollView>
       </DrawerContentScrollView>
     </View>
   );

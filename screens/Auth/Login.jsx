@@ -135,7 +135,7 @@ function Login({ props }) {
               ]}
             >
               <Image
-                source={require("../../assets/images/icon.png")}
+                source={require("../../assets/images/SEHAT-Logo-Square.png")}
                 style={{ width: imgwidth, height: imgheight }}
               />
             </View>

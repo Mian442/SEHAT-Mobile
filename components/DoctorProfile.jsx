@@ -1,7 +1,7 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View, ScrollView, StyleSheet, Dimensions } from "react-native";
-import { Avatar, Icon, AirbnbRating } from "react-native-elements";
+import { Avatar, Icon, AirbnbRating, Rating } from "react-native-elements";
 import {
   Text,
   Button,
@@ -573,13 +573,8 @@ const DoctorProfile = () => {
               <View>
                 <AirbnbRating
                   count={5}
-                  reviews={[
-                    "Unsatisfied",
-                    "Terrible",
-                    "Bad",
-                    "Good",
-                    "Satisfied",
-                  ]}
+                  showRating
+                  reviews={["1 Star", "2 Star", "3 Star", "4 Star", "5 Star"]}
                   defaultRating={5}
                   size={20}
                   onFinishRating={(e) => setReview({ ...review, star: e })}

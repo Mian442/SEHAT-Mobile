@@ -180,9 +180,6 @@ const VitalCardInsertion = ({ id, handelButton }) => {
               dispatch(
                 ADD_USER_VITAL(data, () => {
                   hideModal();
-                  setTimeout(() => {
-                    handelButton();
-                  }, 1000);
                 })
               );
             }

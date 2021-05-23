@@ -130,59 +130,65 @@ const BookAppointment = () => {
                   <Headline>{Day.day}:</Headline>
                   <Divider style={{ marginTop: 7, height: 3 }} />
                   <Subheading style={{ margin: 7 }}>Timing:</Subheading>
-                  <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      flexWrap: "wrap",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      margin: 10,
-                    }}
-                  >
-                    {Day.time?.map((item, index) =>
-                      item.status ? (
-                        <Button
-                          key={index}
-                          title={moment(item.time).format("hh:mm A")}
-                          containerStyle={{ margin: 10 }}
-                          buttonStyle={{ backgroundColor: "#ff1744" }}
-                          onPress={() => {
-                            Toast.show({
-                              text: "Already Booked!",
-                              type: "danger",
-                              style: { margin: 10, borderRadius: 7 },
-                              textStyle: { textAlign: "center" },
-                            });
-                          }}
-                        />
-                      ) : index === time ? (
-                        <Button
-                          key={index}
-                          type="solid"
-                          containerStyle={{
-                            margin: 10,
-                          }}
-                          buttonStyle={{ backgroundColor: "#00e676" }}
-                          title={moment(item.time).format("hh:mm A")}
-                          onPress={() => setTime(null)}
-                        />
-                      ) : (
-                        <Button
-                          key={index}
-                          type="outline"
-                          containerStyle={{
-                            margin: 10,
-                            borderColor: "#00e676",
-                            borderWidth: 1,
-                          }}
-                          title={moment(item.time).format("hh:mm A")}
-                          titleStyle={{ color: "#00e676" }}
-                          onPress={() => setTime(index)}
-                        />
-                      )
-                    )}
-                  </View>
+                  {Day?.time?.length > 0 ? (
+                    <View
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        flexWrap: "wrap",
+                        justifyContent: "flex-start",
+                        alignItems: "center",
+                        margin: 10,
+                      }}
+                    >
+                      {Day.time?.map((item, index) =>
+                        item.status ? (
+                          <Button
+                            key={index}
+                            title={moment(item.time).format("hh:mm A")}
+                            containerStyle={{ margin: 10 }}
+                            buttonStyle={{ backgroundColor: "#ff1744" }}
+                            onPress={() => {
+                              Toast.show({
+                                text: "Already Booked!",
+                                type: "danger",
+                                style: { margin: 10, borderRadius: 7 },
+                                textStyle: { textAlign: "center" },
+                              });
+                            }}
+                          />
+                        ) : index === time ? (
+                          <Button
+                            key={index}
+                            type="solid"
+                            containerStyle={{
+                              margin: 10,
+                            }}
+                            buttonStyle={{ backgroundColor: "#00e676" }}
+                            title={moment(item.time).format("hh:mm A")}
+                            onPress={() => setTime(null)}
+                          />
+                        ) : (
+                          <Button
+                            key={index}
+                            type="outline"
+                            containerStyle={{
+                              margin: 10,
+                              borderColor: "#00e676",
+                              borderWidth: 1,
+                            }}
+                            title={moment(item.time).format("hh:mm A")}
+                            titleStyle={{ color: "#00e676" }}
+                            onPress={() => setTime(index)}
+                          />
+                        )
+                      )}
+                    </View>
+                  ) : (
+                    <Text style={{ textAlign: "center", margin: 10 }}>
+                      Appointment not available on this date.
+                    </Text>
+                  )}
                 </View>
               )}
             </View>

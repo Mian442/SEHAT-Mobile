@@ -3,7 +3,7 @@ import { Body, CardItem, Left, Right } from "native-base";
 import React, { useEffect } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Icon } from "react-native-elements";
-import { Button, Card, FAB, Text, useTheme } from "react-native-paper";
+import { Button, Card, FAB, Text, Title, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
@@ -298,7 +298,11 @@ const MedicalHistoryCard = ({ id, medicalHistory, handelButton }) => {
 
   return (
     <View style={styles.container}>
-      {iseng ? <EnglishDisplay /> : <UrduDisplay />}
+      {medicalHistory ? (
+        <>{iseng ? <EnglishDisplay /> : <UrduDisplay />}</>
+      ) : (
+        <Title style={{ textAlign: "center" }}>No History Available!</Title>
+      )}
       <FAB
         style={styles.fab}
         icon="pencil"

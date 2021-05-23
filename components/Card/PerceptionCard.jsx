@@ -42,7 +42,7 @@ const PerceptionCard = ({ list }) => {
           <Divider style={{ height: 2, marginHorizontal: 20 }} />
           <Card.Content>
             <List.Accordion
-              title="Perception"
+              title="Prescription"
               left={(props) => (
                 <Icon
                   {...props}

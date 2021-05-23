@@ -183,7 +183,14 @@ export const GET_USER_VITALS = (id, callback) => {
   return async (dispatch) => {
     await SEHAT.get(`/user/vitals/${id}`)
       .then((response) => {
-        dispatch(VITALS(response.data.vitals[response.data.vitals.length - 1]));
+        console.log(response.data.vitals);
+        dispatch(
+          VITALS(
+            response.data.vitals
+              ? response.data.vitals[response.data.vitals.length - 1]
+              : null
+          )
+        );
         callback();
       })
       .catch((error) => {
@@ -258,6 +265,7 @@ export const ADD_USER_VITAL = (data, callback) => {
         } else {
           ERROR("Network Error!");
         }
+        callback();
       });
   };
 };

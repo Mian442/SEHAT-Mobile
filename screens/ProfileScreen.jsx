@@ -82,11 +82,11 @@ export default () => {
       show: true,
     },
     {
-      name: "Perception",
+      name: "Prescription",
       icon: "prescription",
       type: "fontisto",
       backcolor: "#009688",
-      screen: "Perception",
+      screen: "Prescription",
       show: true,
     },
     {
@@ -123,11 +123,11 @@ export default () => {
       show: User?.role?.includes("doctor"),
     },
     {
-      name: "Give Perception",
+      name: "Give Prescription",
       icon: "draw",
       type: "material-community",
       backcolor: "#8d6e63",
-      screen: "Give Perception",
+      screen: "Give Prescription",
       show: User?.role.includes("doctor"),
     },
     {

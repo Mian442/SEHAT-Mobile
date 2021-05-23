@@ -2,28 +2,51 @@
   "expo": {
     "name": "SEHAT",
     "slug": "SEHAT",
-    "version": "1.1.0",
+    "version": "1.1.2",
     "orientation": "portrait",
-    "icon": "./assets/images/new/icon.png",
+    "icon": "./assets/images/New/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/new/splash.png",
+      "image": "./assets/images/New/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "enabled": true
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mian442.SEHAT",
+      "buildNumber": "1.1.2"
     },
     "web": {
-      "favicon": "./assets/images/new/icon.png"
+      "favicon": "./assets/images/New/icon.png"
     },
     "android": {
-      "package": "com.mian442.SEHAT"
+      "package": "com.mian442.SEHAT",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/New/adaptive-icon.png",
+        "backgroundImage": "./assets/images/New/adaptive-icon.png"
+      },
+      "icon": "./assets/images/New/icon.png",
+      "backgroundColor": "#FFFFFF",
+      "useNextNotificationsApi": true,
+      "versionCode": 1,
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "AUDIO_RECORDING",
+        "NOTIFICATIONS",
+        "LOCATION",
+        "MEDIA_LIBRARY",
+        "ACCESS_WIFI_STATE",
+        "ACCESS_NETWORK_STATE"
+      ]
     },
     "description": ""
   }

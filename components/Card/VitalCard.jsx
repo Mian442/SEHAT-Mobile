@@ -11,7 +11,7 @@ const VitalCard = ({ id, vital_info, handelButton }) => {
   const { vital } = useSelector((state) => state.Language.Lang);
   const iseng = useSelector((state) => state.Language.ISENGLISH);
   const navigation = useNavigation();
-  // console.log(vital_info);
+  console.log(vital_info);
   const list = [
     {
       name: vital.heart_beat,
@@ -131,7 +131,11 @@ const VitalCard = ({ id, vital_info, handelButton }) => {
   };
   return (
     <View style={{ margin: 10, flex: 1 }}>
-      {iseng ? <EnglishDisplay /> : <UrduDisplay />}
+      {vital_info ? (
+        <>{iseng ? <EnglishDisplay /> : <UrduDisplay />}</>
+      ) : (
+        <Title style={{ textAlign: "center" }}>No History Available!</Title>
+      )}
       <FAB
         style={styles.fab}
         icon="pencil"

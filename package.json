@@ -13,22 +13,17 @@
     "icon": "./assets/images/new/icon.png",
     "splash": {
       "image": "./assets/images/new/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#00e676"
+      "resizeMode": "contain"
     }
   },
   "ios": {
-    "bundleIdentifier": "com.medical_app.sehat",
+    "bundleIdentifier": "com.medical_app.SEHAT",
     "buildNumber": "1.1.0",
     "supportsTablet": true
   },
   "android": {
-    "package": "com.medical_app.sehat",
-    "VersionCode": 1,
-    "adaptiveIcon": {
-      "foregroundImage": "./assets/images/new/adaptive-icon.png",
-      "backgroundColor": "#00e676"
-    }
+    "package": "com.medical_app.SEHAT",
+    "VersionCode": 1
   },
   "permissions": [
     "ACCESS_FINE_LOCATION",

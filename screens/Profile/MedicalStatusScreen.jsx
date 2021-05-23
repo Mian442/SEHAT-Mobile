@@ -37,7 +37,10 @@ const MedicalHistoryScreen = () => {
     return (
       <View style={{ flex: 1, backgroundColor: paper.colors.background }}>
         {!edit ? (
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{}}
+          >
             {info?.medicine_status?.map(
               (item, i) =>
                 item.status && (
@@ -51,6 +54,7 @@ const MedicalHistoryScreen = () => {
             handelButton={() => setedit(!edit)}
           />
         )}
+        <View style={{ height: 80 }}></View>
         {!edit && (
           <FAB
             style={styles.fab}
@@ -70,7 +74,7 @@ const styles = StyleSheet.create({
   fab: {
     position: "absolute",
     margin: 25,
-    right: 40,
+    right: 20,
     bottom: 0,
   },
 });
