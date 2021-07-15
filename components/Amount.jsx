@@ -19,6 +19,7 @@ import { PAYMENT_WITH_API } from "../redux/actions/UserActions";
 const Amount = () => {
   const User = useSelector((state) => state.User.TOKEN);
   const IntegritySalt = "t0sx41a1z5";
+  console.log(User);
   let initial = {
     pp_Version: "1.1",
     pp_TxnType: "MWALLET",
@@ -36,7 +37,7 @@ const Amount = () => {
       .format("YYYYMMDDHHmmss")
       .toString(),
     pp_ReturnURL:
-      "https://fyp-admin-panel.herokuapp.com/api/wallet/?id=" + User.id,
+      "https://fyp-admin-panel.herokuapp.com/api/wallet?id=" + User._id,
     pp_SecureHash: "",
     ppmpf_1: "",
   };
