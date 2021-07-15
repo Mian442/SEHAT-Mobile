@@ -1,25 +1,8 @@
 import * as ActionList from "./ActionsList";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SEHAT from "../../API/SEHAT";
-import { Toast } from "native-base";
-
-const SUCCESS = (msg) => {
-  return Toast.show({
-    text: msg,
-    style: { margin: 10, borderRadius: 7 },
-    textStyle: { textAlign: "center" },
-    type: "success",
-  });
-};
-
-const ERROR = (msg) => {
-  return Toast.show({
-    text: msg,
-    type: "danger",
-    style: { margin: 10, borderRadius: 7 },
-    textStyle: { textAlign: "center" },
-  });
-};
+import { ERROR, SUCCESS } from "./MessageAction";
+import axios from "axios";
 
 export const IS_LOGGED_IN = () => ({
   type: ActionList.IS_LOGGED_IN,
@@ -39,17 +22,22 @@ export const USER_STATUS_REGISTER = (data, callback) => {
     await SEHAT.post("/auth/signup", data)
       .then((response) => {
         dispatch(USER(response.data));
-        SUCCESS("Registration Successful");
+        dispatch(
+          SUCCESS({ content: "Registration Successful!", type: "success" })
+        );
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -59,19 +47,21 @@ export const USER_STATUS_LOGIN = (data, callback) => {
   return async (dispatch) => {
     await SEHAT.post("/auth/login/", data)
       .then((response) => {
-        SUCCESS("Login Successful");
+        dispatch(SUCCESS({ content: "Login Successful", type: "success" }));
         dispatch(USER(response.data));
         callback();
       })
       .catch((error) => {
         console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -112,19 +102,20 @@ export const USER_INFORMATION = (type, id, callback) => {
   return async (dispatch) => {
     await SEHAT.get(`/user/${type}/${id}`)
       .then((response) => {
-        console.log(response.data.user);
         dispatch(INFORMATION(response.data));
-
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
       });
   };
 };
@@ -133,20 +124,24 @@ export const ADD_USER_INFORMATION = (data, callback) => {
   return async (dispatch) => {
     await SEHAT.post("/information/add", data)
       .then((response) => {
-        console.log(response.data);
         dispatch(INFORMATION(response.data));
         dispatch(TOKEN(response.data.user));
-        SUCCESS("Information Updated Successful!");
+        dispatch(
+          SUCCESS({ content: "Information Added Successful!", type: "success" })
+        );
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -157,18 +152,35 @@ export const USER_INFORMATION_UPDATE = (data, callback) => {
     await SEHAT.put("/information/update", data)
       .then((response) => {
         dispatch(INFORMATION(response.data));
-        dispatch(TOKEN(response.data.user));
-        SUCCESS("Information Updated Successful!");
+        let d = {
+          pic: response.data.user.pic,
+          lname: response.data.user.lname,
+          fname: response.data.user.fname,
+          email: response.data.user.email,
+          gender: response.data.user.gender,
+          _id: response.data.user._id,
+          role: response.data.user.role,
+        };
+        dispatch(USER(d));
+        dispatch(
+          SUCCESS({
+            content: "Information Updated Successful!",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -183,7 +195,6 @@ export const GET_USER_VITALS = (id, callback) => {
   return async (dispatch) => {
     await SEHAT.get(`/user/vitals/${id}`)
       .then((response) => {
-        console.log(response.data.vitals);
         dispatch(
           VITALS(
             response.data.vitals
@@ -194,14 +205,16 @@ export const GET_USER_VITALS = (id, callback) => {
         callback();
       })
       .catch((error) => {
-        console.error(error.message);
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
       });
   };
 };
@@ -211,17 +224,25 @@ export const ADD_USER_MEDICAL_HISTORY = (data, callback) => {
     await SEHAT.post("/medicalHistory/add", data)
       .then((response) => {
         dispatch(INFORMATION(response.data));
-        SUCCESS("Medical History Added Successful!");
+        dispatch(
+          SUCCESS({
+            content: "Medical History Added Successful!",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -232,18 +253,25 @@ export const USER_MEDICAL_HISTORY_UPDATE = (data, callback) => {
     await SEHAT.put("/medicalHistory/update", data)
       .then((response) => {
         dispatch(INFORMATION(response.data));
-        SUCCESS("Medical History Updated Successful!");
+        dispatch(
+          SUCCESS({
+            content: "Medical History Updated Successful!",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -253,18 +281,25 @@ export const ADD_USER_VITAL = (data, callback) => {
   return async (dispatch) => {
     await SEHAT.post("/vitals/add/", data)
       .then((response) => {
-        console.log(response.data);
         dispatch(GET_USER_VITALS(data.id, callback));
-        SUCCESS("Vital Added Successful!");
+        dispatch(
+          SUCCESS({
+            content: "Vital Added Successful!",
+            type: "success",
+          })
+        );
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -275,18 +310,25 @@ export const USER_VITAL_UPDATE = (data, callback) => {
     await SEHAT.put("/vitals/update/", data)
       .then((response) => {
         dispatch(VITALS(response.data.vitals[response.data.vitals.length - 1]));
-        SUCCESS("Vital Added Successful!");
+        dispatch(
+          SUCCESS({
+            content: "Vital Updated Successful!",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -297,17 +339,25 @@ export const ADD_MEDICAL_STATUS = (data, callback) => {
     await SEHAT.post("/medicineStatus/add", data)
       .then((response) => {
         dispatch(INFORMATION(response.data));
-        SUCCESS("Medical Status Added Successful!");
+        dispatch(
+          SUCCESS({
+            content: "Medical Status Added Successful!",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
       });
   };
 };
@@ -317,17 +367,25 @@ export const USER_MEDICAL_STATUS_UPDATE = (data, callback) => {
     await SEHAT.put("/medicineStatus/update", data)
       .then((response) => {
         dispatch(INFORMATION(response.data));
-        SUCCESS("Medical Status Added Successful!");
+        dispatch(
+          SUCCESS({
+            content: "Medical Status Updated Successful!",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -338,18 +396,25 @@ export const USER_MEDICAL_STATUS_CHANGE = (data, callback) => {
     await SEHAT.put("/medicineStatus/change", data)
       .then((response) => {
         dispatch(INFORMATION(response.data));
-        SUCCESS("Medical Status Delete Successful!");
+        dispatch(
+          SUCCESS({
+            content: "Medical Status Delete Successful!",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
         console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -360,18 +425,25 @@ export const DOCTOR_VERIFICATION = (data, callback) => {
     await SEHAT.post("/admin/", data)
       .then((response) => {
         dispatch(USER(response.data));
-        SUCCESS("Your Request is Approved!");
+        dispatch(
+          SUCCESS({
+            content: "Your Request is Approved",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
         console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -385,13 +457,16 @@ export const GET_APPOINTMENT = (id, callback) => {
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -402,17 +477,25 @@ export const DELETE_APPOINTMENT = (data, callback) => {
     await SEHAT.put(`/appointment/delete/`, data)
       .then((response) => {
         dispatch(INFORMATION(response.data));
-        SUCCESS("Appointment is Canceled!");
+        dispatch(
+          SUCCESS({
+            content: "Appointment is Canceled!",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -431,13 +514,16 @@ export const GET_CHAT_LIST = (id, callback) => {
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -456,13 +542,16 @@ export const GET_MESSAGE_LIST = (id, callback) => {
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -476,13 +565,253 @@ export const GET_MESSAGE_BY_IDS = (data, callback) => {
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
+        callback();
+      });
+  };
+};
+
+export const WALLET = (payload) => ({
+  type: ActionList.WALLET,
+  payload,
+});
+
+export const GET_WALLET = (id, callback) => {
+  return async (dispatch) => {
+    await SEHAT.get(`/wallet/${id}`)
+      .then((response) => {
+        dispatch(WALLET(response.data));
+        callback();
+      })
+      .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
+        if (error.response) {
+          a.content = error.response.data.error;
+        } else if (error.request) {
+          a.content = "Bad Request!";
+        } else {
+          a.content = error.message;
+        }
+        dispatch(ERROR(a));
+        callback();
+      });
+  };
+};
+
+export const ADD_WALLET = (data, msg, callback) => {
+  return async (dispatch) => {
+    await SEHAT.post("/wallet/", data)
+      .then((response) => {
+        dispatch(WALLET(response.data));
+        console.log(response.data);
+        dispatch(
+          SUCCESS({
+            content: "Balance is Added to wallet!",
+            type: "success",
+          })
+        );
+        callback();
+      })
+      .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
+        if (error.response) {
+          a.content = error.response.data.error;
+        } else if (error.request) {
+          a.content = "Bad Request!";
+        } else {
+          a.content = error.message;
+        }
+        dispatch(ERROR(a));
+        callback();
+      });
+  };
+};
+
+export const PAYMENT_WITH_API = (id, data, callback) => {
+  return async (dispatch) => {
+    await axios
+      .post(
+        "https://sandbox.jazzcash.com.pk/ApplicationAPI/API/Payment/DoTransaction",
+        data
+      )
+      .then((response) => {
+        console.log(response.data);
+        console.log(typeof response.data.pp_Amount);
+        if (response.data.pp_ResponseCode === "000") {
+          let d = {
+            user: id,
+            amount: parseInt(response.data.pp_Amount) / 100,
+            transaction_id: response.data.pp_TxnRefNo,
+            method: response.data.pp_TxnType,
+          };
+          dispatch(ADD_WALLET(d, response.data.pp_ResponseMessage, callback));
+        } else {
+          dispatch(
+            ERROR({
+              content: response.data.pp_ResponseMessage,
+              type: "error",
+            })
+          );
+          callback();
+        }
+      })
+      .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
+        if (error.response) {
+          a.content = error.response.data.error;
+        } else if (error.request) {
+          a.content = "Bad Request!";
+        } else {
+          a.content = error.message;
+        }
+        dispatch(ERROR(a));
+        callback();
+      });
+  };
+};
+
+export const USER_FAVORITE = (payload) => ({
+  type: ActionList.FAVORITE,
+  payload,
+});
+export const USER_FAVORITE_LIST = (payload) => ({
+  type: ActionList.FAVORITE_LIST,
+  payload,
+});
+
+export const ADD_FAVORITE = (id, data, callback) => {
+  return async (dispatch) => {
+    await SEHAT.put("/user/add-favorite/" + id, data)
+      .then(async (response) => {
+        console.log(response.data.favorite);
+        await AsyncStorage.setItem(
+          "favorite",
+          JSON.stringify(response.data.favorite)
+        );
+        dispatch(USER_FAVORITE(response.data.favorite));
+        console.log(response.data);
+        dispatch(
+          SUCCESS({
+            content: "Added to Favorite!",
+            type: "success",
+          })
+        );
+        callback();
+      })
+      .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
+        if (error.response) {
+          a.content = error.response.data.error;
+        } else if (error.request) {
+          a.content = "Bad Request!";
+        } else {
+          a.content = error.message;
+        }
+        dispatch(ERROR(a));
+        callback();
+      });
+  };
+};
+
+export const REMOVE_FAVORITE = (id, data, callback) => {
+  return async (dispatch) => {
+    await SEHAT.put("/user/remove-favorite/" + id, data)
+      .then(async (response) => {
+        await AsyncStorage.setItem(
+          "favorite",
+          JSON.stringify(response.data.favorite)
+        );
+        dispatch(USER_FAVORITE(response.data.favorite));
+        console.log(response.data);
+        dispatch(
+          SUCCESS({
+            content: "Removed From Favorite!",
+            type: "success",
+          })
+        );
+        callback();
+      })
+      .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
+        if (error.response) {
+          a.content = error.response.data.error;
+        } else if (error.request) {
+          a.content = "Bad Request!";
+        } else {
+          a.content = error.message;
+        }
+        dispatch(ERROR(a));
+        callback();
+      });
+  };
+};
+
+export const GET_FAVORITE = () => {
+  return async (dispatch) => {
+    let favorite = await AsyncStorage.getItem("favorite");
+    console.log(favorite);
+    if (favorite) {
+      dispatch(USER_FAVORITE(JSON.parse(favorite)));
+    }
+  };
+};
+
+export const GET_FAVORITES_DB = (id, callback) => {
+  return async (dispatch) => {
+    await SEHAT.get("/user/favorite/" + id)
+      .then(async (response) => {
+        dispatch(USER_FAVORITE_LIST(response.data));
+        console.log("direct", response.data);
+        callback();
+      })
+      .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
+        if (error.response) {
+          a.content = error.response.data.error;
+        } else if (error.request) {
+          a.content = "Bad Request!";
+        } else {
+          a.content = error.message;
+        }
+        dispatch(ERROR(a));
+        callback();
+      });
+  };
+};
+
+export const GET_USER_PERCEPTION = (id, callback) => {
+  return async (dispatch) => {
+    await SEHAT.get("/perception/" + id)
+      .then(async (response) => {
+        dispatch(INFORMATION(response.data));
+        callback();
+      })
+      .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
+        if (error.response) {
+          a.content = error.response.data.error;
+        } else if (error.request) {
+          a.content = "Bad Request!";
+        } else {
+          a.content = error.message;
+        }
+        dispatch(ERROR(a));
         callback();
       });
   };

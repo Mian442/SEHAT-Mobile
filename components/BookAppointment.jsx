@@ -6,7 +6,6 @@ import {
   Text,
   List,
   Title,
-  Checkbox,
   Headline,
   Divider,
   Subheading,
@@ -21,7 +20,7 @@ import {
   ADD_APPOINTMENT,
 } from "../redux/actions/DoctorAction";
 import SavingModel from "./SavingModel";
-import { Toast } from "native-base";
+import { ERROR } from "../redux/actions/MessageAction";
 
 const BookAppointment = () => {
   const paper = useTheme();
@@ -36,7 +35,7 @@ const BookAppointment = () => {
   const [mode, setMode] = React.useState("date");
   const [date, setdate] = React.useState("");
   const [visible, setVisible] = useState(false);
-  const user = useSelector((state) => state.User.TOKKEN);
+  const user = useSelector((state) => state.User.TOKEN);
   const info = useSelector((state) => state.User.info);
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -93,7 +92,7 @@ const BookAppointment = () => {
             )}
             <View
               pointerEvents={checked ? "none" : "auto"}
-              style={{ opacity: checked ? 0.5 : 1 }}
+              style={{ opacity: checked ? 0.5 : 1, margin: 14 }}
             >
               <Title
                 style={{
@@ -107,23 +106,26 @@ const BookAppointment = () => {
                 expanded={expanded}
                 onPress={handlePress}
               >
-                {info?.map((item, i) => (
-                  <List.Item
-                    key={i}
-                    onPress={() => {
-                      setDay(item);
-                      handlePress();
-                    }}
-                    style={{
-                      borderColor: "grey",
-                      borderWidth: 1,
-                      borderRadius: 7,
-                      margin: 10,
-                    }}
-                    key={i}
-                    title={item.day}
-                  />
-                ))}
+                {info?.map(
+                  (item, i) =>
+                    item.time.length > 0 && (
+                      <List.Item
+                        key={i}
+                        onPress={() => {
+                          setDay(item);
+                          handlePress();
+                        }}
+                        style={{
+                          borderColor: "grey",
+                          borderWidth: 1,
+                          borderRadius: 7,
+                          margin: 10,
+                        }}
+                        key={i}
+                        title={item.day}
+                      />
+                    )
+                )}
               </List.Accordion>
               {Day && (
                 <View style={{ margin: 10 }}>
@@ -149,12 +151,12 @@ const BookAppointment = () => {
                             containerStyle={{ margin: 10 }}
                             buttonStyle={{ backgroundColor: "#ff1744" }}
                             onPress={() => {
-                              Toast.show({
-                                text: "Already Booked!",
-                                type: "danger",
-                                style: { margin: 10, borderRadius: 7 },
-                                textStyle: { textAlign: "center" },
-                              });
+                              dispatch(
+                                ERROR({
+                                  content: "Already Booked!",
+                                  type: "error",
+                                })
+                              );
                             }}
                           />
                         ) : index === time ? (
@@ -252,12 +254,12 @@ const BookAppointment = () => {
                           containerStyle={{ margin: 10 }}
                           buttonStyle={{ backgroundColor: "#ff1744" }}
                           onPress={() => {
-                            Toast.show({
-                              text: "Already Booked!",
-                              type: "danger",
-                              style: { margin: 10, borderRadius: 7 },
-                              textStyle: { textAlign: "center" },
-                            });
+                            dispatch(
+                              ERROR({
+                                content: "Already Booked!",
+                                type: "error",
+                              })
+                            );
                           }}
                         />
                       ) : (
@@ -286,13 +288,10 @@ const BookAppointment = () => {
                 buttonStyle={{ backgroundColor: "#651fff" }}
                 titleStyle={{ color: "white" }}
                 onPress={() => {
-                  if (!time) {
-                    Toast.show({
-                      text: "Please Select A Time",
-                      type: "danger",
-                      style: { margin: 10, borderRadius: 7 },
-                      textStyle: { textAlign: "center" },
-                    });
+                  if (time === null) {
+                    dispatch(
+                      ERROR({ content: "Please Select A Time", type: "error" })
+                    );
                   } else {
                     let temp = { ...Day };
                     temp.time = Day.time[time].time;

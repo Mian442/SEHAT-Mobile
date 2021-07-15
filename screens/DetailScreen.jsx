@@ -7,7 +7,6 @@ const DetailScreen = () => {
   const [data, setdata] = useState([]);
   useEffect(() => {
     socket.on("chat message", (msg) => {
-      console.log("ss", msg);
       setdata([...data, msg]);
     });
   }, [socket]);

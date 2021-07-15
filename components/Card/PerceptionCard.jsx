@@ -1,14 +1,8 @@
+import moment from "moment";
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Divider, Icon } from "react-native-elements";
-import {
-  Text,
-  Avatar,
-  Card,
-  List,
-  Paragraph,
-  Subheading,
-} from "react-native-paper";
+import { Avatar, Divider, Icon } from "react-native-elements";
+import { Text, Card, List, Paragraph, Subheading } from "react-native-paper";
 
 const PerceptionCard = ({ list }) => {
   const [expanded, setExpanded] = React.useState(false);
@@ -20,23 +14,30 @@ const PerceptionCard = ({ list }) => {
         <Card style={[styles.shawdow, { borderRadius: 10 }]}>
           <Card.Title
             left={() => (
-              <Avatar.Image
+              <Avatar
+                rounded
+                size="large"
+                overlayContainerStyle={{ backgroundColor: "#009688" }}
+                activeOpacity={0.7}
+                containerStyle={{}}
                 source={
-                  list.img != undefined
-                    ? list.img
-                    : list.gender == "male"
-                    ? require("../../assets/images/doctorM.png")
-                    : require("../../assets/images/doctorF.png")
+                  list.user.pic === null
+                    ? list.user.gender === "Male"
+                      ? require(`../../assets/images/doctorM.png`)
+                      : require(`../../assets/images/doctorF.png`)
+                    : { uri: "data:image/jpeg;base64," + list.user.pic }
                 }
               />
             )}
-            title={list.name}
-            subtitle={list.specialist}
+            title={list.user.fname}
+            subtitle={list.specialty}
             titleStyle={{ paddingLeft: 25 }}
             subtitleStyle={{ paddingLeft: 25 }}
             style={{ margin: 7 }}
             rightStyle={{ marginHorizontal: 14 }}
-            right={(props) => <Subheading {...props}>Illness</Subheading>}
+            right={(props) => (
+              <Subheading {...props}>{list.prescription.disease}</Subheading>
+            )}
           />
 
           <Divider style={{ height: 2, marginHorizontal: 20 }} />
@@ -54,17 +55,12 @@ const PerceptionCard = ({ list }) => {
               expanded={expanded}
               onPress={handlePress}
             >
-              <Paragraph>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque
-                delectus quasi quia, possimus explicabo ducimus sit labore
-                beatae fugit. Doloremque dolorem facilis, consequuntur cumque
-                magnam sunt velit enim aliquam assumenda.
-              </Paragraph>
+              <Paragraph>{list.prescription.perception}</Paragraph>
             </List.Accordion>
             <Text
               style={{ color: "#bdbdbd", fontSize: 12, fontStyle: "italic" }}
             >
-              Noted
+              {moment(list.prescription.date).format("MMM/DD/YYYY")}
             </Text>
           </Card.Content>
         </Card>

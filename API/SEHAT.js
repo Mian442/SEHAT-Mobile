@@ -1,8 +1,6 @@
 import axios from "axios";
+import { Url } from "../config/Config";
 
 export default axios.create({
-  baseURL: "https://sehat.herokuapp.com/api",
+  baseURL: Url,
 });
-// export default axios.create({
-//   baseURL: "http://192.168.0.101:3000/api",
-// });

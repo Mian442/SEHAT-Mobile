@@ -39,7 +39,6 @@ const ReviewCard = ({ data }) => {
           rounded
           size="medium"
           overlayContainerStyle={{ backgroundColor: "#009688" }}
-          onPress={() => console.log("Works!")}
           activeOpacity={0.7}
           containerStyle={{}}
           title="A"

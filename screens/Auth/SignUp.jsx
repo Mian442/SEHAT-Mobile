@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
   ScrollView,
@@ -18,20 +18,54 @@ import {
 import { Image } from "react-native-elements";
 import { Icon, Button, Input } from "react-native-elements";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Toast } from "native-base";
-import { Picker } from "@react-native-picker/picker";
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
 import { USER_STATUS_REGISTER } from "../../redux/actions/UserActions";
-import { v4 as uuidv4 } from "uuid";
+import { ERROR } from "../../redux/actions/MessageAction";
+import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
+//Notification registration
+async function registerForPushNotificationsAsync() {
+  let token;
+  if (Constants.isDevice) {
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+  } else {
+    alert("Must use physical device for Push Notifications");
+  }
+
+  if (Platform.OS === "android") {
+    Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
+
+  return token;
+}
 
 const SignUp = () => {
+  const notificationListener = useRef();
+  const responseListener = useRef();
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [dob, setDOB] = useState("");
   const [ph, setPh] = useState("");
   const [email, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
+  const [token, setToken] = useState("");
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState("date");
   const [loading, setLoading] = useState(false);
@@ -46,13 +80,35 @@ const SignUp = () => {
   const PhnametextInput = React.createRef();
   const passnametextInput = React.createRef();
   const emailtextInput = React.createRef();
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) => {
+      console.log(token);
+      setToken(token);
+    });
 
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        console.log(notification);
+        setToken(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener);
+      Notifications.removeNotificationSubscription(responseListener);
+    };
+  }, []);
   let schema = yup.object().shape({
     fname: yup.string().required(),
     lname: yup.string().required(),
-    ph: yup.number().required().min(10),
+    ph: yup.string().required().min(10),
     dob: yup.date().required(),
     gender: yup.string().required(),
+    token: yup.string().required(),
     email: yup.string().email().required(),
     password: yup.string().min(8).max(32).required(),
   });
@@ -69,42 +125,27 @@ const SignUp = () => {
       ph,
       dob,
       gender,
-      email,
+      email: email.toLowerCase(),
       password,
+      token,
     };
     schema
       .validate(data, { abortEarly: false })
       .then((valid) => {
-        console.log(valid);
-        try {
-          dispatch(
-            USER_STATUS_REGISTER(
-              {
-                ...valid,
-                pic: null,
-              },
-              () => {
-                setLoading(false);
-              }
-            )
-          );
-        } catch (error) {
-          Toast.show({
-            text: "Something Went wrong",
-            buttonText: "Okay",
-            type: "danger",
-            style: styles.toast,
-          });
-          setLoading(false);
-        }
+        dispatch(
+          USER_STATUS_REGISTER(
+            {
+              ...valid,
+              pic: null,
+            },
+            () => {
+              setLoading(false);
+            }
+          )
+        );
       })
       .catch((err) => {
-        Toast.show({
-          text: err.errors[0],
-          buttonText: "Okay",
-          type: "danger",
-          style: styles.toast,
-        });
+        dispatch(ERROR({ content: err.errors[0], type: "error" }));
         setLoading(false);
       });
   }
@@ -176,7 +217,7 @@ const SignUp = () => {
       </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        // contentContainerStyle={{ flex: 1 }}
+        keyboardShouldPersistTaps="handled"
       >
         <KeyboardAvoidingView
         //contentContainerStyle={{ flex: 1 }}
@@ -224,7 +265,7 @@ const SignUp = () => {
               style={{
                 display: "flex",
                 flexDirection: "row",
-                marginHorizontal: 10,
+                margin: 10,
                 alignItems: "center",
               }}
             >
@@ -237,7 +278,7 @@ const SignUp = () => {
                 }}
                 onPress={() => setGender("Female")}
               >
-                <Text>Female</Text>
+                <Text style={{ marginRight: 12 }}>Female</Text>
                 <RadioButton
                   value="Female"
                   status={gender === "Female" ? "checked" : "unchecked"}
@@ -252,7 +293,7 @@ const SignUp = () => {
                   alignItems: "center",
                 }}
               >
-                <Text>Male</Text>
+                <Text style={{ marginHorizontal: 12 }}>Male</Text>
                 <RadioButton
                   value="Male"
                   status={gender === "Male" ? "checked" : "unchecked"}
@@ -278,7 +319,7 @@ const SignUp = () => {
                   color="green"
                   style={{ fontSize: 20 }}
                 />
-                <Text style={{ fontSize: 18, marginLeft: 5 }}>
+                <Text style={{ fontSize: 16, marginLeft: 12 }}>
                   {Lang.auth_sign_up.dob}:
                 </Text>
                 <Text
@@ -360,7 +401,7 @@ const SignUp = () => {
               type="outline"
               onPress={handleOnSignup}
               title={Lang.auth_sign_up.signup}
-              containerStyle={[styles.shawdow, {}]}
+              containerStyle={[styles.shawdow, { borderRadius: 20 }]}
               loading={loading}
               disabled={loading}
               buttonStyle={{

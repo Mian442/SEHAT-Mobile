@@ -9,7 +9,7 @@ import { GET_CHAT_LIST } from "../redux/actions/UserActions";
 import moment from "moment";
 const ChatListScreen = () => {
   const chat = useSelector((state) => state.User.chat);
-  const User = useSelector((state) => state.User.TOKKEN);
+  const User = useSelector((state) => state.User.TOKEN);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigation = useNavigation();

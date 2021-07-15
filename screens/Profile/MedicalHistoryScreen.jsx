@@ -14,7 +14,7 @@ const MedicalHistoryScreen = () => {
   const navigation = useNavigation();
   const { medical_history } = useSelector((state) => state.Language.Lang);
   const info = useSelector((state) => state.User.info);
-  const user = useSelector((state) => state.User.TOKKEN);
+  const user = useSelector((state) => state.User.TOKEN);
   const dispatch = useDispatch();
   useEffect(() => {
     navigation.setOptions({ title: medical_history.title });

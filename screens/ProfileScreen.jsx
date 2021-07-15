@@ -8,13 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Avatar, Icon, ListItem } from "react-native-elements";
-import {
-  Button,
-  Headline,
-  IconButton,
-  Title,
-  useTheme,
-} from "react-native-paper";
+import { Button, IconButton, Title, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 
 import { USER_STATUS_OUT } from "../redux/actions/UserActions";
@@ -22,10 +16,10 @@ export default () => {
   const navigation = useNavigation();
   const paper = useTheme();
   const dispatch = useDispatch();
-  const User = useSelector((state) => state.User.TOKKEN);
+  const User = useSelector((state) => state.User.TOKEN);
   const list = [
     {
-      name: "Patient Profile",
+      name: "Profile",
       icon: "ios-information-circle-outline",
       type: "ionicon",
       backcolor: "#00e676",
@@ -47,6 +41,15 @@ export default () => {
       backcolor: "#2a3eb1",
       screen: "Chat List",
       show: true,
+    },
+    {
+      name: "Favorite",
+      icon: "heart",
+      type: "font-awesome",
+      backcolor: "red",
+      screen: "Favorite",
+      show: true,
+      data: "patient",
     },
     {
       name: "Appointment",
@@ -122,13 +125,21 @@ export default () => {
       screen: "Reviews",
       show: User?.role?.includes("doctor"),
     },
+    // {
+    //   name: "Give Prescription",
+    //   icon: "draw",
+    //   type: "material-community",
+    //   backcolor: "#8d6e63",
+    //   screen: "Give Prescription",
+    //   show: User?.role.includes("doctor"),
+    // },
     {
-      name: "Give Prescription",
-      icon: "draw",
-      type: "material-community",
-      backcolor: "#8d6e63",
-      screen: "Give Prescription",
-      show: User?.role.includes("doctor"),
+      name: "Wallet",
+      icon: "wallet",
+      type: "font-awesome-5",
+      backcolor: "#69f0ae",
+      screen: "Wallet",
+      show: true,
     },
     {
       name: "Setting",
@@ -163,7 +174,6 @@ export default () => {
           rounded
           size={280}
           overlayContainerStyle={{ backgroundColor: "#009688" }}
-          onPress={() => console.log("Works!")}
           activeOpacity={0.7}
           containerStyle={{ alignSelf: "center" }}
           source={

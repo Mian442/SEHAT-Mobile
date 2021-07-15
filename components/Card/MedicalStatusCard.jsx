@@ -10,7 +10,7 @@ import SavingModel from "../SavingModel";
 const MedicalHistoryCard = ({ id, data }) => {
   const navigation = useNavigation();
   const { medical_status } = useSelector((state) => state.Language.Lang);
-  const iseng = useSelector((state) => state.Language.ISENGLISH);
+  const is_eng = useSelector((state) => state.Language.IS_ENGLISH);
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
   const EnglishDisplay = () => {
@@ -22,7 +22,7 @@ const MedicalHistoryCard = ({ id, data }) => {
           style={{ textAlign: "center" }}
           right={() => (
             <Text style={{ textAlign: "center", alignSelf: "center" }}>
-              {data?.medicine}
+              {data?.medicine ? data?.medicine : "N/A"}
             </Text>
           )}
         />
@@ -34,7 +34,8 @@ const MedicalHistoryCard = ({ id, data }) => {
           style={{ textAlign: "center" }}
           right={() => (
             <Text style={{ textAlign: "center", alignSelf: "center" }}>
-              {data?.dosage}
+              {data?.dosage ? data?.dosage : "N/A"}{" "}
+              {data?.unit ? data?.unit : "N/A"}
             </Text>
           )}
         />
@@ -52,7 +53,9 @@ const MedicalHistoryCard = ({ id, data }) => {
           titleStyle={{ marginLeft: 18 }}
           style={{ textAlign: "center" }}
           right={() => (
-            <Text style={{ alignSelf: "center" }}>{data?.description}</Text>
+            <Text style={{ alignSelf: "center" }}>
+              {data?.description ? data?.description : "N/A"}
+            </Text>
           )}
         />
 
@@ -114,13 +117,7 @@ const MedicalHistoryCard = ({ id, data }) => {
             onPress={() => {
               let d = { id, medicine_id: data._id };
               setVisible(true);
-              dispatch(
-                USER_MEDICAL_STATUS_CHANGE(d, () =>
-                  setTimeout(() => {
-                    setVisible(false);
-                  }, 1000)
-                )
-              );
+              dispatch(USER_MEDICAL_STATUS_CHANGE(d, () => setVisible(false)));
             }}
           >
             <Icon
@@ -248,7 +245,7 @@ const MedicalHistoryCard = ({ id, data }) => {
 
   return (
     <View style={styles.container}>
-      {iseng ? <EnglishDisplay /> : <UrduDisplay />}
+      {is_eng ? <EnglishDisplay /> : <UrduDisplay />}
     </View>
   );
 };

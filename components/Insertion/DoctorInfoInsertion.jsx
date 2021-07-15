@@ -1,9 +1,9 @@
-import { Body, CardItem, Left, Right } from "native-base";
+import { HStack, Center } from "native-base";
 import React, { createRef, useState } from "react";
 import { ScrollView } from "react-native";
 import { Button, Icon } from "react-native-elements";
-import { Card, Text, useTheme, Divider, TextInput } from "react-native-paper";
-import { useDispatch, useSelector } from "react-redux";
+import { Card, useTheme, Divider, TextInput } from "react-native-paper";
+import { useDispatch } from "react-redux";
 import { DOC_INFORMATION_UPDATE } from "../../redux/actions/DoctorAction";
 import SavingModel from "../SavingModel";
 
@@ -32,6 +32,7 @@ const DoctorInfoInsertion = ({ info, handelButton }) => {
       disable: true,
       property: "specialty",
       keypad: "default",
+      index: 1,
     },
     {
       name: "License NO",
@@ -45,6 +46,7 @@ const DoctorInfoInsertion = ({ info, handelButton }) => {
       disable: true,
       property: "licenseNo",
       keypad: "default",
+      index: 2,
     },
     {
       name: "Online Fee",
@@ -58,6 +60,7 @@ const DoctorInfoInsertion = ({ info, handelButton }) => {
       disable: false,
       property: "online_fee",
       keypad: "numeric",
+      index: 3,
     },
     {
       name: "Office Fee",
@@ -71,6 +74,7 @@ const DoctorInfoInsertion = ({ info, handelButton }) => {
       disable: false,
       property: "office_fee",
       keypad: "numeric",
+      index: 4,
     },
     {
       name: "About",
@@ -84,6 +88,7 @@ const DoctorInfoInsertion = ({ info, handelButton }) => {
       disable: false,
       property: "about",
       keypad: "default",
+      index: -1,
     },
   ];
 
@@ -96,66 +101,51 @@ const DoctorInfoInsertion = ({ info, handelButton }) => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps="handled">
       <Card style={{ margin: 10 }}>
-        <CardItem
-          header
-          bordered
-          style={{
-            backgroundColor: paper.colors.surface,
-          }}
-        >
-          <Card.Title
-            title="Doctor Information"
-            titleStyle={{ alignSelf: "center" }}
-          />
-        </CardItem>
+        <Card.Title
+          title="Doctor Information"
+          titleStyle={{ alignSelf: "center" }}
+        />
         <Divider />
         {list.map((item, i) => (
-          <CardItem
+          <HStack
             key={i}
-            bordered
+            space={3}
+            alignItems="center"
             style={{ backgroundColor: paper.colors.surface }}
           >
-            <Left>
+            <Center size={16} shadow={3}>
               <Icon name={item.icon} type={item.type} color={item.color} />
-            </Left>
-            <Body
-              style={{
-                flexGrow: 2,
-                alignSelf: "center",
+            </Center>
+            <TextInput
+              label={item.name}
+              style={{ flexGrow: 1, marginRight: 14 }}
+              mode="outlined"
+              dense
+              value={item.value}
+              onChangeText={(text) => {
+                handelData(text, item.property);
               }}
-            >
-              <Text>{item.name}</Text>
-            </Body>
-            <Right style={{ flexGrow: 4, flexDirection: "row" }}>
-              <TextInput
-                label={item.name}
-                value={item.value}
-                style={{ flexGrow: 1, height: 52, width: 50 }}
-                onChangeText={(text) => {
-                  handelData(text, item.property);
-                }}
-                disabled={item.disable}
-                ref={item.ref}
-                onSubmitEditing={() => {
-                  i + 1 !== 5 && list[i + 1].ref.current.focus();
-                }}
-                blurOnSubmit={item.blur}
-                returnKeyType={item.returnKeyType}
-                keyboardType={item.keypad}
-              />
-            </Right>
-          </CardItem>
+              disabled={item.disable}
+              ref={item.ref}
+              onSubmitEditing={() => {
+                item.index !== -1 && list[item.index].ref.current.focus();
+              }}
+              blurOnSubmit={item.blur}
+              returnKeyType={item.returnKeyType}
+              keyboardType={item.keypad}
+            />
+          </HStack>
         ))}
       </Card>
       <Button
         icon={
           <Icon
             name="save"
-            size={24}
+            size={18}
             color="#fff"
-            style={{ margin: 7 }}
+            style={{ paddingRight: 7 }}
             type="font-awesome-5"
           />
         }
@@ -178,6 +168,15 @@ const DoctorInfoInsertion = ({ info, handelButton }) => {
         onPress={handelButton}
         buttonStyle={{ margin: 10, backgroundColor: paper.colors.error }}
         title="Close"
+        icon={
+          <Icon
+            name="close"
+            size={18}
+            color="#fff"
+            style={{ paddingRight: 7 }}
+            type="font-awesome"
+          />
+        }
       />
       <SavingModel visible={visible} />
     </ScrollView>

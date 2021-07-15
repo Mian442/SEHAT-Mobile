@@ -29,6 +29,7 @@ import WorkExperienceScreen from "../screens/Record/WorkExperienceScreen";
 import SchedulesScreen from "../screens/Profile/SchedulesScreen";
 import ReviewsScreen from "../screens/Profile/ReviewsScreen";
 import GivePerceptionScreen from "../screens/Profile/GivePerceptionScreen";
+import FavoriteScreen from "../screens/Profile/FavoriteScreen";
 import DoctorProfileScreen from "../screens/Profile/DoctorProfileScreen";
 import SettingScreen from "../screens/Profile/SettingScreen";
 import MedicalHistoryInsertion from "../components/Insertion/MedicalHistoryInsertion";
@@ -36,6 +37,15 @@ import MedicalStatusInsertion from "../components/Insertion/MedicalStatusInserti
 import VitalCardInsertion from "../components/Insertion/VitalCardInsertion";
 import DoctorVerificationScreen from "../screens/DoctorVerificationScreen";
 import ChatListScreen from "../screens/ChatListScreen";
+import Wallet from "../screens/Profile/Wallet";
+import Amount from "../components/Amount";
+import AdvanceFeatures from "../screens/AdvanceFeatures";
+import PredictionModel from "../screens/AIModule/PredictionModel";
+import MultipleSymptomPredictionModel from "../screens/AIModule/MultipleSymptomPredictionModel";
+import ImageEnhancement from "../screens/AIModule/ImageEnhancement";
+import SymptomPrediction from "../screens/AIModule/SymptomPrediction";
+import Graphs from "../screens/AIModule/Graphs";
+import ImageRegistration from "../screens/AIModule/ImageRegistration";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -77,9 +87,21 @@ const StackNavigator = ({ navigation }) => {
         options={HeaderOption}
       />
       <Stack.Screen name="List" component={List} options={HeaderOption} />
+      <Stack.Screen name="Wallet" component={Wallet} options={HeaderOption} />
+      <Stack.Screen
+        name="Advance"
+        component={AdvanceFeatures}
+        options={HeaderOption}
+      />
+      <Stack.Screen name="Amount" component={Amount} options={HeaderOption} />
       <Stack.Screen
         name="CategoryList"
         component={CategoryList}
+        options={HeaderOption}
+      />
+      <Stack.Screen
+        name="Favorite"
+        component={FavoriteScreen}
         options={HeaderOption}
       />
       <Stack.Screen
@@ -103,6 +125,32 @@ const StackNavigator = ({ navigation }) => {
         options={HeaderOption}
       />
       <Stack.Screen name="Preview" component={Preview} options={HeaderOption} />
+      <Stack.Screen
+        name="Image Enhancement"
+        component={ImageEnhancement}
+        options={HeaderOption}
+      />
+      <Stack.Screen
+        name="Image Registration"
+        component={ImageRegistration}
+        options={HeaderOption}
+      />
+      <Stack.Screen
+        name="Symptom Prediction"
+        component={SymptomPrediction}
+        options={HeaderOption}
+      />
+      <Stack.Screen
+        name="Heart Disease"
+        component={PredictionModel}
+        options={HeaderOption}
+      />
+      <Stack.Screen name="Graphs" component={Graphs} options={HeaderOption} />
+      <Stack.Screen
+        name="Multiple Diseases"
+        component={MultipleSymptomPredictionModel}
+        options={HeaderOption}
+      />
       <Stack.Screen
         name="Vital"
         component={VitalScreen}
@@ -204,6 +252,7 @@ const StackNavigator = ({ navigation }) => {
 
 const DrawerNavigation = () => {
   const paper = useTheme();
+  console.log(paper);
   return (
     <Drawer.Navigator
       initialRouteName="Main"

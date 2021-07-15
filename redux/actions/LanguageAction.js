@@ -11,7 +11,7 @@ export const LANGUAGE_STATUS = (payload) => ({
   type: ActionList.LANGUAGE_STATUS,
 });
 
-export const ISENGLISH = (payload) => ({
+export const IS_ENGLISH = (payload) => ({
   type: ActionList.IS_ENGLISH,
   payload,
 });
@@ -35,7 +35,9 @@ export const GET_LANGUAGE = () => {
     if (lang) {
       dispatch(LANGUAGE_STATUS());
       lang === "Urdu" ? dispatch(LANGUAGE(Urdu)) : dispatch(LANGUAGE(English));
-      lang === "Urdu" ? dispatch(ISENGLISH(false)) : dispatch(ISENGLISH(true));
+      lang === "Urdu"
+        ? dispatch(IS_ENGLISH(false))
+        : dispatch(IS_ENGLISH(true));
     }
   };
 };

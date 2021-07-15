@@ -3,20 +3,18 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Icon, Input } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
-import { Text, FAB, useTheme, Title, Subheading } from "react-native-paper";
+import { Text, FAB, useTheme, Button } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import io from "socket.io-client";
-import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid";
-import { Toast } from "native-base";
-import { GET_DOC_ALL_INFORMATION } from "../redux/actions/DoctorAction";
 import Loading from "../components/Loading";
 import {
   GET_MESSAGE_LIST,
   GET_MESSAGE_BY_IDS,
   MESSAGE,
 } from "../redux/actions/UserActions";
-const socket = io("https://sehat.herokuapp.com/chat");
+import { SocketUrl } from "../config/Config";
+const socket = io(SocketUrl + "/chat");
+
 const ChatScreen = () => {
   const paper = useTheme();
   const message = useSelector((state) => state.User.message);
@@ -25,8 +23,9 @@ const ChatScreen = () => {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
   const [scrollRef, setScrollRef] = useState();
-  const User = useSelector((state) => state.User.TOKKEN);
-  const doctors = useSelector((state) => state.Doctor.allDoctor);
+  const [isPrescription, setIsPrescription] = useState(false);
+  const [disease, setDisease] = useState("");
+  const User = useSelector((state) => state.User.TOKEN);
   const { params } = useRoute();
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -57,6 +56,9 @@ const ChatScreen = () => {
         );
       }
     });
+  }, []);
+
+  useEffect(() => {
     if (message) {
       setReceive(message.chat);
       setStatus(message._id);
@@ -64,32 +66,22 @@ const ChatScreen = () => {
   }, [message]);
   useEffect(() => {
     socket.on("roomCreated", (msg) => {
-      if (msg.user === User._id) {
+      console.log("roomCreated");
+      if (msg.user == User._id || msg.doctor === User._id) {
+        console.log("true");
         dispatch(MESSAGE(msg));
-        let data = {
-          session_id: msg._id,
-          msg: {
-            text,
-            sender: {
-              name: User.fname,
-              id: User._id,
-              time: new Date(),
-            },
-            receiver: {
-              name: params.name,
-              id: params.id,
-              time: new Date(),
-            },
-          },
-        };
-        socket.emit("send", data);
+        setReceive(msg.chat);
+        setStatus(msg._id);
       }
     });
     socket.on("receive", (msg) => {
+      console.log("received");
       if (msg.session_id === status) {
+        console.log("true");
         setReceive([...receive, msg.msg]);
-        console.log("o2");
         setText("");
+        setDisease("");
+        setIsPrescription(false);
         scrollRef?.scrollToEnd({ animated: true });
       }
     });
@@ -130,17 +122,41 @@ const ChatScreen = () => {
                     borderRadius: 12,
                   }}
                 >
+                  {User._id !== i.sender.id && (
+                    <Text
+                      style={{
+                        textAlign: "left",
+                        color: "#000",
+                      }}
+                    >
+                      {i.sender.name}
+                    </Text>
+                  )}
+                  {i.isPrescription && (
+                    <>
+                      <Text
+                        style={{
+                          textAlign:
+                            User._id === i.sender.id ? "right" : "left",
+                          color: User._id === i.sender.id ? "#fff" : "#000",
+                        }}
+                      >
+                        Prescription
+                      </Text>
+                      <Text
+                        style={{
+                          textAlign:
+                            User._id === i.sender.id ? "right" : "left",
+                          color: User._id === i.sender.id ? "#fff" : "#000",
+                        }}
+                      >
+                        Disease:{i.disease}
+                      </Text>
+                    </>
+                  )}
                   <Text
                     style={{
-                      textAlign: User._id === i.sender.id ? "left" : "right",
-                      color: User._id === i.sender.id ? "#fff" : "#000",
-                    }}
-                  >
-                    {User._id === i.sender.id ? "me" : i.sender.name}
-                  </Text>
-                  <Text
-                    style={{
-                      textAlign: User._id === i.sender.id ? "left" : "right",
+                      textAlign: User._id === i.sender.id ? "right" : "left",
                       color: User._id === i.sender.id ? "#fff" : "#000",
                     }}
                   >
@@ -151,6 +167,43 @@ const ChatScreen = () => {
             })}
           </View>
         </ScrollView>
+        {User.role.includes("doctor") && isPrescription && (
+          <View
+            style={{
+              flexDirection: "row",
+              alignSelf: "center",
+              margin: 10,
+            }}
+          >
+            <Input
+              placeholder="Type Disease"
+              value={disease}
+              inputContainerStyle={{
+                alignSelf: "center",
+                backgroundColor: paper.colors.surface,
+              }}
+              inputStyle={{ paddingLeft: 12, color: paper.colors.text }}
+              containerStyle={{
+                display: "flex",
+                flexDirection: "row",
+                flexShrink: 1,
+              }}
+              onChangeText={(text) => setDisease(text)}
+            />
+            <Icon
+              name="close-o"
+              type="evilicon"
+              onPress={() => {
+                setIsPrescription(false);
+                setDisease("");
+              }}
+              color="red"
+              size={42}
+              style={{ marginLeft: -2 }}
+            />
+          </View>
+        )}
+
         <View
           style={{
             flexDirection: "row",
@@ -160,6 +213,7 @@ const ChatScreen = () => {
           <Input
             placeholder="Type a message"
             value={text}
+            multiline={true}
             inputContainerStyle={{
               alignSelf: "center",
               borderRadius: 25,
@@ -170,50 +224,60 @@ const ChatScreen = () => {
             containerStyle={{
               display: "flex",
               flexDirection: "row",
+              alignItems: "center",
               flexShrink: 1,
             }}
             onChangeText={(text) => setText(text)}
           />
-          <FAB
-            small
-            style={{ height: 40 }}
-            icon={(props) => (
-              <Icon
-                name="sc-telegram"
-                type="evilicon"
-                {...props}
-                size={28}
-                style={{ marginLeft: -2 }}
-              />
-            )}
+          <Icon
+            name="sc-telegram"
+            type="evilicon"
+            size={42}
+            style={{ marginLeft: -2 }}
             onPress={() => {
+              let data = {
+                msg: {
+                  text,
+                  isPrescription,
+                  disease,
+                  sender: {
+                    name: User.fname,
+                    id: User._id,
+                    time: new Date(),
+                  },
+                  receiver: {
+                    name: params.name,
+                    id: params.id,
+                    time: new Date(),
+                  },
+                },
+              };
               if (!message) {
+                a = true;
                 socket.emit("preparingRoom", {
                   user: User._id,
                   doctor: params.id,
+                  data,
                 });
               } else {
-                let data = {
-                  session_id: message._id,
-                  msg: {
-                    text,
-                    sender: {
-                      name: User.fname,
-                      id: User._id,
-                      time: new Date(),
-                    },
-                    receiver: {
-                      name: params.name,
-                      id: params.id,
-                      time: new Date(),
-                    },
-                  },
-                };
+                data.session_id = message._id;
                 socket.emit("send", data);
               }
             }}
           />
         </View>
+        {User.role.includes("doctor") && !isPrescription && (
+          <View style={{ margin: 10 }}>
+            <Button
+              mode="contained"
+              onPress={() => {
+                setIsPrescription(true);
+              }}
+            >
+              Prescription Message
+            </Button>
+          </View>
+        )}
       </View>
     );
 };

@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { Title, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import AppointmentCard from "../../components/Card/AppointmentCard";
@@ -11,13 +11,14 @@ import {
 } from "../../redux/actions/UserActions";
 import { GET_APPOINTMENT as DOC_APPOINTMENT } from "../../redux/actions/DoctorAction";
 import SavingModel from "../../components/SavingModel";
+import NoResult from "../../components/NoResult";
 
 export default function AppointmentScreen() {
   const paper = useTheme();
   const navigation = useNavigation();
   const { appointment } = useSelector((state) => state.Language.Lang);
   const { params } = useRoute();
-  const user = useSelector((state) => state.User.TOKKEN);
+  const user = useSelector((state) => state.User.TOKEN);
   const info = useSelector((state) => state.User.info);
   const [loading, setLoading] = useState(false);
   const [model, setModel] = useState(false);
@@ -50,7 +51,6 @@ export default function AppointmentScreen() {
     return (
       <ScrollView
         contentContainerStyle={{
-          flex: 1,
           backgroundColor: paper.colors.surface,
         }}
       >
@@ -79,7 +79,7 @@ export default function AppointmentScreen() {
             />
           ))
         ) : (
-          <Title>No Result</Title>
+          <NoResult />
         )}
         <SavingModel visible={model} title="Canceling" />
       </ScrollView>

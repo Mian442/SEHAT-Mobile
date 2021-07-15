@@ -55,6 +55,7 @@ const VitalCardInsertion = ({ id, handelButton }) => {
         a.heart_beat = text;
         setData(a);
       },
+      unit: "BPM",
     },
     {
       name: "Blood Pressure",
@@ -70,6 +71,7 @@ const VitalCardInsertion = ({ id, handelButton }) => {
         a.blood_pressure = text;
         setData(a);
       },
+      unit: "mmHg",
     },
     {
       name: "Weight",
@@ -85,6 +87,7 @@ const VitalCardInsertion = ({ id, handelButton }) => {
         a.weight = text;
         setData(a);
       },
+      unit: "kg",
     },
     {
       name: "Blood Glucose",
@@ -100,6 +103,7 @@ const VitalCardInsertion = ({ id, handelButton }) => {
         a.blood_glucose = text;
         setData(a);
       },
+      unit: "mg/dl",
     },
   ];
 
@@ -129,16 +133,12 @@ const VitalCardInsertion = ({ id, handelButton }) => {
                 color={item.backcolor}
                 reverse
                 reverseColor="#fff"
-                size={11}
+                size={18}
               />
-              <ListItem.Content>
-                <Title>{item.name}</Title>
-                <Subheading>{item.name}</Subheading>
-              </ListItem.Content>
               <TextInput
                 label={item.name}
                 value={item.value}
-                style={{ height: 30, width: "40%" }}
+                style={{ height: 30, width: "59%" }}
                 onChangeText={item.change}
                 ref={item.ref}
                 onSubmitEditing={() => {
@@ -149,6 +149,7 @@ const VitalCardInsertion = ({ id, handelButton }) => {
                 keyboardType="numeric"
                 returnKeyType={item.keytype}
               />
+              <Subheading>{item.unit}</Subheading>
             </ListItem>
             <Divider />
           </View>
@@ -161,7 +162,7 @@ const VitalCardInsertion = ({ id, handelButton }) => {
           icon={
             <Icon
               name="save"
-              size={24}
+              size={18}
               color="#fff"
               style={{ paddingRight: 7 }}
               type="font-awesome-5"
@@ -192,7 +193,7 @@ const VitalCardInsertion = ({ id, handelButton }) => {
             icon={
               <Icon
                 name="close"
-                size={24}
+                size={18}
                 color="#fff"
                 style={{ paddingRight: 7 }}
                 type="font-awesome"

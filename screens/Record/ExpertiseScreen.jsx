@@ -1,16 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
-import { Toast } from "native-base";
 import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
 import { StyleSheet, View } from "react-native";
 import { Button, Icon } from "react-native-elements";
-import {
-  ActivityIndicator,
-  Chip,
-  Headline,
-  TextInput,
-  useTheme,
-} from "react-native-paper";
+import { Chip, Headline, TextInput, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../components/Loading";
 import SavingModel from "../../components/SavingModel";
@@ -18,7 +11,7 @@ import {
   DOC_ADD_EXPERTISE,
   GET_DOC_RECORD,
 } from "../../redux/actions/DoctorAction";
-import { USER_INFORMATION } from "../../redux/actions/UserActions";
+import { ERROR } from "../../redux/actions/MessageAction";
 
 const ExpertiseScreen = () => {
   const paper = useTheme();
@@ -26,7 +19,7 @@ const ExpertiseScreen = () => {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
-  const user = useSelector((state) => state.User.TOKKEN);
+  const user = useSelector((state) => state.User.TOKEN);
   const info = useSelector((state) => state.User.info);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -45,25 +38,25 @@ const ExpertiseScreen = () => {
     }
   }, [info]);
 
-  const handelButton = () => {
+  const check = () => {
     let a = [...expertise];
     if (a.includes(text)) {
-      Toast.show({
-        text: "Already Exists!",
-        style: {
-          margin: 20,
-          borderRadius: 25,
-          width: 180,
-          alignSelf: "center",
-          backgroundColor: paper.colors.onBackground,
-        },
-        textStyle: { textAlign: "center", color: paper.colors.surface },
-      });
-    } else if (text !== "") {
+      dispatch(ERROR({ content: "Already Existed!", type: "error" }));
+      return false;
+    } else if (text === "") {
+      return false;
+    }
+    return true;
+  };
+
+  const handelButton = () => {
+    let a = [...expertise];
+    if (check()) {
       a.push(text);
       a = a.sort();
       setExpertise(a);
       setText("");
+      return true;
     }
   };
 
@@ -111,7 +104,7 @@ const ExpertiseScreen = () => {
             value={text}
             onChangeText={(text) => setText(text)}
             onSubmitEditing={handelButton}
-            blurOnSubmit={false}
+            blurOnSubmit={true}
           />
           <Button
             icon={
@@ -124,16 +117,18 @@ const ExpertiseScreen = () => {
               />
             }
             onPress={() => {
-              let data = {
-                id: user._id,
-                expertise,
-              };
-              setVisible(true);
-              dispatch(
-                DOC_ADD_EXPERTISE(data, () => {
-                  setVisible(false);
-                })
-              );
+              if (expertise.length > 0) {
+                let data = {
+                  id: user._id,
+                  expertise,
+                };
+                setVisible(true);
+                dispatch(
+                  DOC_ADD_EXPERTISE(data, () => {
+                    setVisible(false);
+                  })
+                );
+              }
             }}
             buttonStyle={{
               margin: 30,

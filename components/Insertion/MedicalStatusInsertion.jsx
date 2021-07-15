@@ -1,16 +1,11 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import React, { createRef, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Button, Icon, Image, Overlay } from "react-native-elements";
-import {
-  ActivityIndicator,
-  Card,
-  TextInput,
-  Title,
-  useTheme,
-} from "react-native-paper";
+import { Card, TextInput, Title, useTheme } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { useDispatch, useSelector } from "react-redux";
+import { HStack, Center } from "native-base";
 import {
   ADD_MEDICAL_STATUS,
   USER_MEDICAL_STATUS_UPDATE,
@@ -23,7 +18,7 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
   const [picvisible, setPicvisible] = useState(false);
   const [saveVisible, setSaveVisible] = React.useState(false);
   const { medical_status } = useSelector((state) => state.Language.Lang);
-  const iseng = useSelector((state) => state.Language.ISENGLISH);
+  const is_eng = useSelector((state) => state.Language.IS_ENGLISH);
   const dispatch = useDispatch();
   const [med_status, setMed_status] = useState();
   const { params } = useRoute();
@@ -34,6 +29,7 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
     description: "",
     date: new Date(),
     id,
+    unit: "",
   };
   useEffect(() => {
     if (params.forEdit) {
@@ -108,7 +104,6 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
       if (!result.cancelled) {
         let a = { ...med_status };
         a.pic.push(result.base64);
-        console.log(a.pic.length);
         setMed_status(a);
       }
     } catch (E) {
@@ -126,7 +121,6 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
       if (!result.cancelled) {
         let a = { ...med_status };
         a.pic.push(result.base64);
-        console.log(a.pic.length);
         setMed_status(a);
       }
     } catch (E) {
@@ -138,38 +132,55 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
     <View style={{ backgroundColor: paper.colors.background, flex: 1 }}>
       <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          {iseng ? (
+          {is_eng ? (
             <View>
               <Card style={{ marginVertical: 15 }}>
                 {list.map((item, i) => (
-                  <Card.Title
+                  <HStack
                     key={i}
-                    title={item.name}
-                    left={() => (
+                    space={3}
+                    alignItems="center"
+                    style={{ backgroundColor: paper.colors.surface }}
+                  >
+                    <Center size={16} shadow={3}>
                       <Icon
                         name={item.icon}
                         type={item.type}
                         color={item.color}
                       />
-                    )}
-                    rightStyle={{ width: "50%", marginHorizontal: 7 }}
-                    right={() => (
+                    </Center>
+
+                    <TextInput
+                      label={item.name}
+                      style={{ flexGrow: 1, marginRight: 14 }}
+                      mode="outlined"
+                      dense
+                      value={item.value}
+                      onChangeText={item.change}
+                      disabled={item.icon === "date" && true}
+                      ref={item.ref}
+                      onSubmitEditing={() => {
+                        item.index !== -1 &&
+                          list[item.index].ref.current.focus();
+                      }}
+                      blurOnSubmit={item.blur}
+                      returnKeyType={item.keytype}
+                    />
+                    {item.name === "Dosage" && (
                       <TextInput
-                        label={item.name}
-                        value={item.value}
-                        style={{ height: 30 }}
-                        onChangeText={item.change}
-                        disabled={item.icon === "date" && true}
-                        ref={item.ref}
-                        onSubmitEditing={() => {
-                          i + 1 !== 3 && list[i + 1].ref.current.focus();
-                        }}
+                        label="Unit"
+                        style={{ flexGrow: 1, marginRight: 14 }}
                         mode="outlined"
-                        blurOnSubmit={item.blur}
-                        returnKeyType={item.keytype}
+                        dense
+                        value={med_status?.unit}
+                        onChangeText={(text) => {
+                          let a = { ...med_status };
+                          a.unit = text;
+                          setMed_status(a);
+                        }}
                       />
                     )}
-                  />
+                  </HStack>
                 ))}
               </Card>
               <Card style={{ marginVertical: 15 }}>
@@ -260,35 +271,50 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
             <View>
               <Card style={{ marginVertical: 15 }}>
                 {list.map((item, i) => (
-                  <Card.Title
+                  <HStack
                     key={i}
-                    title={item.name}
-                    titleStyle={{ textAlign: "right", marginRight: 7 }}
-                    right={() => (
+                    space={3}
+                    alignItems="center"
+                    style={{ backgroundColor: paper.colors.surface }}
+                  >
+                    {item.name === "خوراک" && (
+                      <TextInput
+                        label="یونٹ"
+                        style={{ flexGrow: 1, marginLeft: 14 }}
+                        mode="outlined"
+                        dense
+                        value={med_status.unit}
+                        onChangeText={(text) => {
+                          let a = { ...med_status };
+                          a.unit = text;
+                          setMed_status(a);
+                        }}
+                      />
+                    )}
+                    <TextInput
+                      label={item.name}
+                      style={{ flexGrow: 1, marginLeft: 14 }}
+                      mode="outlined"
+                      dense
+                      value={item.value}
+                      onChangeText={item.change}
+                      disabled={item.icon === "date" && true}
+                      ref={item.ref}
+                      onSubmitEditing={() => {
+                        item.index !== -1 &&
+                          list[item.index].ref.current.focus();
+                      }}
+                      blurOnSubmit={item.blur}
+                      returnKeyType={item.keytype}
+                    />
+                    <Center size={16} shadow={3}>
                       <Icon
                         name={item.icon}
                         type={item.type}
                         color={item.color}
                       />
-                    )}
-                    leftStyle={{ width: "50%", marginHorizontal: 7 }}
-                    left={() => (
-                      <TextInput
-                        label={item.name}
-                        value={item.value}
-                        style={{ height: 30 }}
-                        onChangeText={item.change}
-                        disabled={item.icon === "date" && true}
-                        ref={item.ref}
-                        onSubmitEditing={() => {
-                          i + 1 !== 3 && list[i + 1].ref.current.focus();
-                        }}
-                        mode="outlined"
-                        blurOnSubmit={item.blur}
-                        returnKeyType={item.keytype}
-                      />
-                    )}
-                  />
+                    </Center>
+                  </HStack>
                 ))}
               </Card>
               <Card style={{ marginVertical: 15 }}>

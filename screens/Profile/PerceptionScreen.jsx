@@ -1,67 +1,40 @@
-import React from "react";
+import { useNavigation } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import { FlatList, SafeAreaView, StyleSheet, View } from "react-native";
 import { useTheme } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
 import PerceptionCard from "../../components/Card/PerceptionCard";
+import Loading from "../../components/Loading";
+import { GET_USER_PERCEPTION } from "../../redux/actions/UserActions";
 
 const PerceptionScreen = () => {
+  const user = useSelector((state) => state.User.TOKEN);
+  const info = useSelector((state) => state.User.info);
+  const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    // navigation.setOptions({ title: "Per" });
+    navigation.addListener("focus", () => {
+      dispatch(
+        GET_USER_PERCEPTION(user._id, () => {
+          setTimeout(() => {
+            setLoading(true);
+          }, 3000);
+        })
+      );
+    });
+  }, [info]);
   const paper = useTheme();
-  const list = [
-    {
-      name: "abc",
-      specialist: "special",
-      gender: "female",
-      des: { title: "Prescription", content: "sasdas" },
-      doctor_id: "dfjsldfjskj2q1",
-    },
-    {
-      name: "abc",
-      specialist: "special",
-      gender: "male",
-      des: { title: "Prescription", content: "sasdas" },
-      doctor_id: "dfjsldfjskj2q2",
-    },
-    {
-      name: "abc",
-      specialist: "special",
-      gender: "female",
-      des: { title: "Prescription", content: "sasdas" },
-      doctor_id: "dfjsldfjskj2q3",
-    },
-    {
-      name: "abc",
-      specialist: "special",
-      gender: "female",
-      des: { title: "Prescription", content: "sasdas" },
-      doctor_id: "dfjsldfjskj2q4",
-    },
-    {
-      name: "abc",
-      specialist: "special",
-      gender: "male",
-      des: { title: "Prescription", content: "sasdas" },
-      doctor_id: "dfjsldfjskj2q5",
-    },
-    {
-      name: "abc",
-      specialist: "special",
-      gender: "female",
-      des: { title: "Prescription", content: "sasdas" },
-      doctor_id: "dfjsldfjskj2q6",
-    },
-    {
-      name: "abc",
-      specialist: "special",
-      gender: "male",
-      des: { title: "Perception", content: "sasdas" },
-      doctor_id: "dfjsldfjskj2q7+",
-    },
-  ];
+  if (!loading) {
+    return <Loading />;
+  }
   return (
     <View style={{ flex: 1, backgroundColor: paper.colors.background }}>
       <FlatList
-        data={list}
+        data={info}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item) => item.doctor_id}
+        keyExtractor={(item) => item?.prescription._id}
         renderItem={({ item }) => {
           return (
             <SafeAreaView style={{ flex: 1, marginTop: 10 }}>

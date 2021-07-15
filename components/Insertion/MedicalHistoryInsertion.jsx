@@ -1,5 +1,6 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import React, { createRef, useEffect, useState } from "react";
+import { HStack, Center } from "native-base";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Button, Icon, Image, Overlay } from "react-native-elements";
 import {
@@ -10,7 +11,6 @@ import {
   Card,
   Paragraph,
   Divider,
-  ActivityIndicator,
 } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
@@ -20,17 +20,18 @@ import {
   USER_MEDICAL_HISTORY_UPDATE,
 } from "../../redux/actions/UserActions";
 import SavingModal from "../SavingModel";
+import moment from "moment";
 const MedicalHistoryInsertion = ({ id, handelButton }) => {
   const paper = useTheme();
   const [text, setText] = React.useState("");
-  const [date, setdate] = useState("");
+  const [date, setdate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState("date");
   const [visible, setVisible] = useState(false);
   const [picvisible, setPicvisible] = useState(false);
   const [saveVisible, setSaveVisible] = useState(false);
   const { medical_history } = useSelector((state) => state.Language.Lang);
-  const iseng = useSelector((state) => state.Language.ISENGLISH);
+  const is_eng = useSelector((state) => state.Language.IS_ENGLISH);
   const dispatch = useDispatch();
   const { params } = useRoute();
   const [med_his_info, setMed_his_info] = useState();
@@ -74,7 +75,6 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
       if (!result.cancelled) {
         let a = { ...med_his_info };
         a.pic.push(result.base64);
-        console.log(a.pic.length);
         setMed_his_info(a);
       }
     } catch (E) {
@@ -92,7 +92,6 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
       if (!result.cancelled) {
         let a = { ...med_his_info };
         a.pic.push(result.base64);
-        console.log(a.pic.length);
         setMed_his_info(a);
       }
     } catch (E) {
@@ -130,6 +129,7 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
         a.disease = text;
         setMed_his_info(a);
       },
+      index: 1,
     },
     {
       name: medical_history.category,
@@ -145,6 +145,7 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
         a.category = text;
         setMed_his_info(a);
       },
+      index: 2,
     },
     {
       name: medical_history.reaction,
@@ -160,6 +161,7 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
         a.reaction = text;
         setMed_his_info(a);
       },
+      index: 3,
     },
     {
       name: medical_history.treatment,
@@ -175,11 +177,15 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
         a.treatment = text;
         setMed_his_info(a);
       },
+      index: -1,
     },
   ];
   return (
     <View style={[styles.container, { backgroundColor: paper.colors.surface }]}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={{ margin: 20 }}>
           {show && (
             <DateTimePicker
@@ -194,7 +200,7 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
               maximumDate={new Date()}
             />
           )}
-          {iseng ? (
+          {is_eng ? (
             <View>
               <TouchableOpacity onPress={showDatepicker}>
                 <View style={[styles.row]}>
@@ -204,47 +210,50 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
                     type="font-awesome-5"
                     color="#ff1744"
                   />
-                  <Text style={{ paddingLeft: 7, fontSize: 24 }}>
+                  <Text style={{ paddingLeft: 7, fontSize: 18 }}>
                     Select the Date:
                   </Text>
                   <Text
-                    style={{ paddingLeft: 7, fontSize: 24, color: "#009688" }}
+                    style={{ paddingLeft: 7, fontSize: 18, color: "#009688" }}
                   >
-                    {date.toString().substr(4, 12)}
+                    {moment(date).format("MMM DD/YYYY")}
                   </Text>
                 </View>
                 <Divider style={{ height: 2 }} />
               </TouchableOpacity>
               <Card style={{ marginVertical: 15 }}>
                 {list.map((item, i) => (
-                  <Card.Title
+                  <HStack
                     key={i}
-                    title={item.name}
-                    left={() => (
+                    space={3}
+                    alignItems="center"
+                    style={{ backgroundColor: paper.colors.surface }}
+                  >
+                    <Center size={16} shadow={3}>
                       <Icon
                         name={item.icon}
                         type={item.type}
                         color={item.color}
                       />
-                    )}
-                    rightStyle={{ width: "50%", marginHorizontal: 7 }}
-                    right={() => (
-                      <TextInput
-                        label={item.name}
-                        value={item.value}
-                        style={{ height: 30 }}
-                        onChangeText={item.change}
-                        disabled={item.icon === "date" && true}
-                        ref={item.ref}
-                        onSubmitEditing={() => {
-                          i + 1 !== 4 && list[i + 1].ref.current.focus();
-                        }}
-                        mode="outlined"
-                        blurOnSubmit={item.blur}
-                        returnKeyType={item.keytype}
-                      />
-                    )}
-                  />
+                    </Center>
+
+                    <TextInput
+                      label={item.name}
+                      style={{ flexGrow: 1, marginRight: 14 }}
+                      mode="outlined"
+                      dense
+                      value={item.value}
+                      onChangeText={item.change}
+                      disabled={item.icon === "date" && true}
+                      ref={item.ref}
+                      onSubmitEditing={() => {
+                        item.index !== -1 &&
+                          list[item.index].ref.current.focus();
+                      }}
+                      blurOnSubmit={item.blur}
+                      returnKeyType={item.keytype}
+                    />
+                  </HStack>
                 ))}
               </Card>
               <Card>
@@ -396,12 +405,13 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
             <View>
               <TouchableOpacity onPress={showDatepicker}>
                 <View style={[styles.row, { justifyContent: "flex-end" }]}>
-                  <Text style={{ paddingLeft: 7, fontSize: 24 }}>تاریخ:</Text>
                   <Text
-                    style={{ paddingLeft: 7, fontSize: 24, color: "#009688" }}
+                    style={{ paddingRight: 7, fontSize: 18, color: "#009688" }}
                   >
-                    {date.toString().substr(4, 12)}
+                    {moment(date).format("YYYY/DD MMM")}
                   </Text>
+                  <Text style={{ paddingRight: 7, fontSize: 18 }}>تاریخ:</Text>
+
                   <Icon
                     name="calendar-alt"
                     size={28}
@@ -413,35 +423,36 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
               </TouchableOpacity>
               <Card style={{ marginVertical: 15 }}>
                 {list.map((item, i) => (
-                  <Card.Title
+                  <HStack
                     key={i}
-                    title={item.name}
-                    titleStyle={{ textAlign: "right", marginRight: 7 }}
-                    right={() => (
+                    space={3}
+                    alignItems="center"
+                    style={{ backgroundColor: paper.colors.surface }}
+                  >
+                    <TextInput
+                      label={item.name}
+                      style={{ flexGrow: 1, marginLeft: 14 }}
+                      mode="outlined"
+                      dense
+                      value={item.value}
+                      onChangeText={item.change}
+                      disabled={item.icon === "date" && true}
+                      ref={item.ref}
+                      onSubmitEditing={() => {
+                        item.index !== -1 &&
+                          list[item.index].ref.current.focus();
+                      }}
+                      blurOnSubmit={item.blur}
+                      returnKeyType={item.keytype}
+                    />
+                    <Center size={16} shadow={3}>
                       <Icon
                         name={item.icon}
                         type={item.type}
                         color={item.color}
                       />
-                    )}
-                    leftStyle={{ width: "50%", marginHorizontal: 7 }}
-                    left={() => (
-                      <TextInput
-                        label={item.name}
-                        value={item.value}
-                        style={{ height: 30 }}
-                        onChangeText={item.change}
-                        disabled={item.icon === "date" && true}
-                        ref={item.ref}
-                        onSubmitEditing={() => {
-                          i + 1 !== 4 && list[i + 1].ref.current.focus();
-                        }}
-                        mode="outlined"
-                        blurOnSubmit={item.blur}
-                        returnKeyType={item.keytype}
-                      />
-                    )}
-                  />
+                    </Center>
+                  </HStack>
                 ))}
               </Card>
               <Card>
@@ -664,7 +675,7 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
             icon={
               <Icon
                 name="save"
-                size={24}
+                size={18}
                 color="#fff"
                 style={{ paddingRight: 7 }}
                 type="font-awesome-5"
@@ -713,7 +724,7 @@ const MedicalHistoryInsertion = ({ id, handelButton }) => {
               icon={
                 <Icon
                   name="close"
-                  size={24}
+                  size={18}
                   color="#fff"
                   style={{ paddingRight: 7 }}
                   type="font-awesome"

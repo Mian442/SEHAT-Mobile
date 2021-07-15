@@ -1,24 +1,6 @@
 import * as ActionList from "./ActionsList";
 import SEHAT from "../../API/SEHAT";
-import { Toast } from "native-base";
-
-const SUCCESS = (msg) => {
-  return Toast.show({
-    text: msg,
-    style: { margin: 10, borderRadius: 7 },
-    textStyle: { textAlign: "center" },
-    type: "success",
-  });
-};
-
-const ERROR = (msg) => {
-  return Toast.show({
-    text: msg,
-    type: "danger",
-    style: { margin: 10, borderRadius: 7 },
-    textStyle: { textAlign: "center" },
-  });
-};
+import { ERROR, SUCCESS } from "./MessageAction";
 
 export const INFORMATION = (payload) => ({
   type: ActionList.USER_INFORMATION,
@@ -29,18 +11,20 @@ export const GET_DOC_RECORD = (name, id, callback) => {
   return async (dispatch) => {
     await SEHAT.get(`/doctor/record/${name}/${id}`)
       .then((response) => {
-        console.log(response.data);
         dispatch(INFORMATION(response.data));
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
       });
   };
 };
@@ -50,17 +34,25 @@ export const DOC_ADD_SERVICES = (data, callback) => {
     await SEHAT.post("/record/AddServices/", data)
       .then((response) => {
         dispatch(INFORMATION(response.data));
-        SUCCESS("Services Added Successful!");
+        dispatch(
+          SUCCESS({
+            content: "Services Added Successful!",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -71,17 +63,25 @@ export const DOC_ADD_QUALIFICATION = (data, callback) => {
     await SEHAT.post("/record/AddQualification/", data)
       .then((response) => {
         dispatch(INFORMATION(response.data));
-        SUCCESS("Qualification Added Successful!");
+        dispatch(
+          SUCCESS({
+            content: "Qualification Added Successful!",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -92,17 +92,25 @@ export const DOC_ADD_EXPERTISE = (data, callback) => {
     await SEHAT.post("/record/AddExpertise/", data)
       .then((response) => {
         dispatch(INFORMATION(response.data));
-        SUCCESS("EXPERTISE Added Successful!");
+        dispatch(
+          SUCCESS({
+            content: "EXPERTISE Added Successful!",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -113,17 +121,25 @@ export const DOC_ADD_ACHIEVEMENTS = (data, callback) => {
     await SEHAT.post("/record/AddAchievements/", data)
       .then((response) => {
         dispatch(INFORMATION(response.data));
-        SUCCESS("Achievements Added Successful!");
+        dispatch(
+          SUCCESS({
+            content: "Achievements Added Successful!",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -134,17 +150,25 @@ export const DOC_ADD_PUBLICATION = (data, callback) => {
     await SEHAT.post("/record/AddPublications/", data)
       .then((response) => {
         dispatch(INFORMATION(response.data));
-        SUCCESS("Publication Added Successful!");
+        dispatch(
+          SUCCESS({
+            content: "Publication Added Successful!",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -155,17 +179,25 @@ export const DOC_ADD_WORK_EXPERIENCE = (data, callback) => {
     await SEHAT.post("/record/AddWorkExperience/", data)
       .then((response) => {
         dispatch(INFORMATION(response.data));
-        SUCCESS("Work Experience Added Successful!");
+        dispatch(
+          SUCCESS({
+            content: "Work Experience Added Successful!",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -179,13 +211,16 @@ export const GET_DOC_ONLINE_SCHEDULE = (id, callback) => {
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -196,17 +231,25 @@ export const DOC_ADD_ONLINE_SCHEDULE = (data, callback) => {
     await SEHAT.post("/OnlineSchedule/", data)
       .then((response) => {
         dispatch(INFORMATION(response.data));
-        SUCCESS("Online Schedule Added Successful!");
+        dispatch(
+          SUCCESS({
+            content: "Online Schedule Added Successful!",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -225,14 +268,16 @@ export const GET_DOC_REVIEW = (id, callback) => {
         callback();
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR(error.message);
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -243,16 +288,24 @@ export const DOC_ADD_REVIEW = (data, callback) => {
     await SEHAT.post("/review/", data)
       .then((response) => {
         dispatch(GET_DOC_INFORMATION(data.id, callback));
-        SUCCESS("Review Added Successful!");
+        dispatch(
+          SUCCESS({
+            content: "Review Added Successful!",
+            type: "success",
+          })
+        );
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -276,13 +329,16 @@ export const GET_DOC_ALL_INFORMATION = (callback) => {
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -302,13 +358,16 @@ export const GET_DOC_INFORMATION = (id, callback) => {
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -322,14 +381,16 @@ export const GET_DOC_SINGLE_INFORMATION = (id, callback) => {
         callback();
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -340,17 +401,25 @@ export const DOC_INFORMATION_UPDATE = (data, callback) => {
     await SEHAT.put(`/doctor/`, data)
       .then((response) => {
         dispatch(INFORMATION(response.data));
-        SUCCESS("Profile updated Successful!");
+        dispatch(
+          SUCCESS({
+            content: "Profile updated Successful!",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -361,17 +430,25 @@ export const ADD_APPOINTMENT = (data, callback) => {
     await SEHAT.post(`/appointment/`, data)
       .then((response) => {
         dispatch(INFORMATION(response.data));
-        SUCCESS("Appointment Added Successful!");
+        dispatch(
+          SUCCESS({
+            content: "Appointment Added Successful!",
+            type: "success",
+          })
+        );
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -385,13 +462,16 @@ export const GET_APPOINTMENT = (id, callback) => {
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };
@@ -415,13 +495,16 @@ export const GET_SPECIALTY = (id, callback) => {
         callback();
       })
       .catch((error) => {
+        console.log(error.response);
+        let a = { content: "", type: "error" };
         if (error.response) {
-          ERROR(error.response.data.error);
+          a.content = error.response.data.error;
         } else if (error.request) {
-          ERROR("Bad Request!");
+          a.content = "Bad Request!";
         } else {
-          ERROR("Network Error!");
+          a.content = error.message;
         }
+        dispatch(ERROR(a));
         callback();
       });
   };

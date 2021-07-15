@@ -17,7 +17,7 @@ const VitalScreen = () => {
   const navigation = useNavigation();
   const { vital } = useSelector((state) => state.Language.Lang);
   const vitals = useSelector((state) => state.User.vitals);
-  const user = useSelector((state) => state.User.TOKKEN);
+  const user = useSelector((state) => state.User.TOKEN);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -55,6 +55,7 @@ const VitalScreen = () => {
     return (
       <ScrollView
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
         contentContainerStyle={{
           flex: 1,
           backgroundColor: paper.colors.surface,

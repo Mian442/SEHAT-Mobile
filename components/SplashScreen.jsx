@@ -7,14 +7,18 @@ const SplashScreen = () => {
     <>
       <ImageBackground
         source={require("../assets/images/New/splash.png")}
-        style={{ flex: 1, display: "flex", justifyContent: "center" }}
+        style={{
+          flex: 1,
+          position: "relative",
+          resizeMode: "contain",
+        }}
         resizeMode="cover"
       >
         <ActivityIndicator
           animating={true}
           color="#1de9b6"
           size="large"
-          style={{}}
+          style={{ position: "absolute", bottom: "28%", left: "45%" }}
         />
       </ImageBackground>
     </>

@@ -14,7 +14,7 @@ const FindDoctorScreen = () => {
   const paper = useTheme();
   const dispatch = useDispatch();
   const doctors = useSelector((state) => state.Doctor.allDoctor);
-  const User = useSelector((state) => state.User.TOKKEN);
+  const User = useSelector((state) => state.User.TOKEN);
   const [doc, setDoc] = useState([]);
   const handlerGetDoctors = () => {
     setLoading(false);
@@ -27,7 +27,7 @@ const FindDoctorScreen = () => {
     );
   };
   useEffect(() => {
-    navigation.addListener("focus", handlerGetDoctors);
+    handlerGetDoctors();
   }, []);
 
   if (!loading) {

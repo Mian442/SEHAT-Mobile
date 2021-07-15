@@ -2,7 +2,7 @@ import * as ActionList from "../actions/ActionsList";
 const initialState = {
   Lang: null,
   status: false,
-  ISENGLISH: null,
+  IS_ENGLISH: null,
 };
 
 export default (state = initialState, { type, payload }) => {
@@ -12,7 +12,7 @@ export default (state = initialState, { type, payload }) => {
     case ActionList.LANGUAGE_STATUS:
       return { ...state, status: true };
     case ActionList.IS_ENGLISH:
-      return { ...state, ISENGLISH: payload };
+      return { ...state, IS_ENGLISH: payload };
 
     default:
       return state;

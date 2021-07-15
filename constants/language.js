@@ -29,6 +29,7 @@ const Urdu = {
     sign_out: "لاگ آوٹ",
     preference: "ترجیح",
     language_change: "زبان کی تبدیلی",
+    advance: "Advance",
   },
   appointment: "طے شدہ ملاقات",
   information: {
@@ -67,11 +68,24 @@ const Urdu = {
     description: "لینے کا طریقہ",
     pic: "تصاویر",
   },
+  wallet: {
+    title: "پرس",
+    add_wallet: "بیلنس شامل کریں",
+    current_wallet: "موجودہ توازن",
+  },
+  amount: {
+    title: "رقم",
+    subtitle: "JazzCash",
+    subtitle2: "بیلٹ کو بٹوے میں شامل کریں",
+    amount: "کل رقم داخل کریں",
+    phone: "درست فون درج کریں",
+    add: "ادائیگی کی تصدیق کریں",
+  },
 };
 
 const English = {
   app_name: "SEHAT",
-  email: "Enter email",
+  email: "Enter email or Phone Number",
   pass: "Enter password",
   auth_login: {
     login: "Login",
@@ -100,6 +114,7 @@ const English = {
     sign_out: "Sign Out",
     preference: "Preference",
     language_change: "Language Change",
+    advance: "Advance",
   },
   appointment: "Appointment",
   information: {
@@ -113,7 +128,7 @@ const English = {
     height: "Height",
     blood: "Blood",
     ph: "Phone",
-    cnic: "Cnic",
+    cnic: "CNIC",
   },
   medical_history: {
     title: "Medical History",
@@ -137,6 +152,19 @@ const English = {
     dosage: "Dosage",
     description: "Description",
     pic: "Pictures",
+  },
+  wallet: {
+    title: "Wallet",
+    add_wallet: "Add Balance",
+    current_wallet: "Current Balance",
+  },
+  amount: {
+    title: "Amount",
+    subtitle: "JazzCash",
+    subtitle2: "Add Balance to wallet",
+    amount: "Enter Total Amount",
+    phone: "Enter valid Phone",
+    add: "Confirm Payment",
   },
 };
 

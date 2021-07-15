@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { ActivityIndicator, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import DoctorInformation from "../../components/Card/DoctorInformation";
 import DoctorInfoInsertion from "../../components/Insertion/DoctorInfoInsertion";
@@ -15,7 +15,7 @@ const InfoScreen = () => {
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const user = useSelector((state) => state.User.TOKKEN);
+  const user = useSelector((state) => state.User.TOKEN);
   const info = useSelector((state) => state.User.info);
   const dispatch = useDispatch();
 

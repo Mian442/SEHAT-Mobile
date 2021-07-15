@@ -1,25 +1,20 @@
 import React, { createRef, useEffect, useState } from "react";
 import { ScrollView } from "react-native";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Button, Icon } from "react-native-elements";
-import {
-  ActivityIndicator,
-  Card,
-  Headline,
-  List,
-  TextInput,
-  useTheme,
-} from "react-native-paper";
+import { Card, Headline, List, TextInput, useTheme } from "react-native-paper";
 import randomColor from "randomcolor";
 import { TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import SavingModel from "../../components/SavingModel";
+import { HStack, Center } from "native-base";
 import {
   DOC_ADD_ACHIEVEMENTS,
   GET_DOC_RECORD,
 } from "../../redux/actions/DoctorAction";
 import Loading from "../../components/Loading";
+import { ERROR } from "../../redux/actions/MessageAction";
 
 const AchievementScreen = () => {
   const paper = useTheme();
@@ -81,7 +76,7 @@ const AchievementScreen = () => {
     },
   ];
   const [loading, setLoading] = useState(false);
-  const user = useSelector((state) => state.User.TOKKEN);
+  const user = useSelector((state) => state.User.TOKEN);
   const info = useSelector((state) => state.User.info);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -104,19 +99,13 @@ const AchievementScreen = () => {
     let a = [...achievements];
     let flag = false;
     for (let i of a) {
-      if (i.type === Data.name && i.institute === Data.place) {
+      if (
+        i.name === Data.name &&
+        i.place === Data.place &&
+        i.year === Data.year
+      ) {
         flag = true;
-        Toast.show({
-          text: "Already Exists!",
-          style: {
-            margin: 20,
-            borderRadius: 25,
-            width: 180,
-            alignSelf: "center",
-            backgroundColor: paper.colors.onBackground,
-          },
-          textStyle: { textAlign: "center", color: paper.colors.surface },
-        });
+        dispatch(ERROR({ content: "Already Existed!", type: "error" }));
         break;
       }
     }
@@ -142,35 +131,35 @@ const AchievementScreen = () => {
             <Headline>Achievements Details</Headline>
             {list.map((item, i) => {
               return (
-                <Card.Title
+                <HStack
                   key={i}
-                  title={item.name}
-                  left={(props) => (
+                  space={3}
+                  alignItems="center"
+                  style={{ backgroundColor: paper.colors.surface }}
+                >
+                  <Center size={16} shadow={3}>
                     <Icon
                       name={item.icon}
                       type={item.type}
                       color={item.color}
                     />
-                  )}
-                  rightStyle={{ width: 180 }}
-                  right={(props) => (
-                    <TextInput
-                      {...props}
-                      label={item.name}
-                      value={item.value}
-                      style={{ height: 30 }}
-                      onChangeText={item.change}
-                      ref={item.ref}
-                      onSubmitEditing={() => {
-                        i + 1 !== 3 && list[i + 1].ref.current.focus();
-                      }}
-                      keyboardType={item.keyboard}
-                      mode="outlined"
-                      blurOnSubmit={item.blur}
-                      returnKeyType={item.keytype}
-                    />
-                  )}
-                />
+                  </Center>
+                  <TextInput
+                    label={item.name}
+                    style={{ flexGrow: 1, marginRight: 14 }}
+                    mode="outlined"
+                    dense
+                    value={item.value}
+                    onChangeText={item.change}
+                    ref={item.ref}
+                    onSubmitEditing={() => {
+                      i + 1 !== 3 && list[i + 1].ref.current.focus();
+                    }}
+                    blurOnSubmit={item.blur}
+                    returnKeyType={item.keytype}
+                    keyboardType={item.keyboard}
+                  />
+                </HStack>
               );
             })}
             <Button
@@ -218,7 +207,7 @@ const AchievementScreen = () => {
                         onPress={() =>
                           setAchievements(
                             achievements.filter(
-                              (qual) => qual.type !== item.type
+                              (qual) => qual.name !== item.name
                             )
                           )
                         }

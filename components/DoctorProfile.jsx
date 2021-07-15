@@ -22,6 +22,7 @@ import {
   DOC_ADD_REVIEW,
   GET_DOC_INFORMATION,
 } from "../redux/actions/DoctorAction";
+import { ADD_FAVORITE, REMOVE_FAVORITE } from "../redux/actions/UserActions";
 import ReviewCard from "./Card/ReviewCard";
 import Loading from "./Loading";
 import SavingModel from "./SavingModel";
@@ -33,11 +34,12 @@ const DoctorProfile = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const info = useSelector((state) => state.Doctor.info);
-  const User = useSelector((state) => state.User.TOKKEN);
+  const User = useSelector((state) => state.User.TOKEN);
+  const favorite = useSelector((state) => state.User.favorite);
   const [model, setModel] = useState(false);
   const [review, setReview] = useState({
     star: 5,
-    comment: "I am very Satisfied with the Doctor Performance!",
+    comment: "",
   });
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -124,6 +126,7 @@ const DoctorProfile = () => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-evenly",
+                  alignItems: "center",
                   margin: 7,
                 }}
               >
@@ -148,6 +151,39 @@ const DoctorProfile = () => {
                 >
                   Book Appointment
                 </Button>
+                <Icon
+                  name={
+                    favorite.includes(params.doctor_id) ? "heart" : "hearto"
+                  }
+                  type="antdesign"
+                  color="red"
+                  size={24}
+                  onPress={() => {
+                    // setModel(true);
+                    console.log(favorite, favorite.includes(params.doctor_id));
+                    if (!favorite.includes(params.doctor_id)) {
+                      dispatch(
+                        ADD_FAVORITE(
+                          User._id,
+                          { favorite: params.doctor_id },
+                          () => {
+                            setModel(false);
+                          }
+                        )
+                      );
+                    } else {
+                      dispatch(
+                        REMOVE_FAVORITE(
+                          User._id,
+                          { favorite: params.doctor_id },
+                          () => {
+                            setModel(false);
+                          }
+                        )
+                      );
+                    }
+                  }}
+                />
                 {/* <Icon
                   name="phone"
                   type="font-awesome"
@@ -330,11 +366,16 @@ const DoctorProfile = () => {
                 />
               </Surface>
             </ScrollView>
-
+            {/* services */}
             <Surface
               style={[
                 styles.shawdow,
-                { marginBottom: 30, padding: 7, borderRadius: 10 },
+                {
+                  marginBottom: 30,
+                  padding: 7,
+                  borderRadius: 10,
+                  marginHorizontal: 14,
+                },
               ]}
             >
               <View style={[styles.row, { alignItems: "center" }]}>
@@ -348,29 +389,42 @@ const DoctorProfile = () => {
               </View>
               <Divider style={{ height: 2 }} />
               <View style={[styles.row, { alignItems: "center" }]}>
-                {info?.record?.services?.map((service, i) => {
-                  return (
-                    <Chip
-                      key={i}
-                      mode="outlined"
-                      style={{
-                        margin: 7,
-                        borderColor: "#2196f3",
-                        borderWidth: 1.5,
-                      }}
-                      textStyle={{ color: "#2196f3" }}
-                    >
-                      {service}
-                    </Chip>
-                  );
-                })}
+                {info?.record?.services.length > 0 ? (
+                  info?.record?.services?.map((service, i) => {
+                    return (
+                      <Chip
+                        key={i}
+                        mode="outlined"
+                        style={{
+                          margin: 7,
+                          borderColor: "#2196f3",
+                          borderWidth: 1.5,
+                        }}
+                        textStyle={{ color: "#2196f3" }}
+                      >
+                        {service}
+                      </Chip>
+                    );
+                  })
+                ) : (
+                  <Subheading
+                    style={{ textAlign: "center", margin: 10, width: "100%" }}
+                  >
+                    No Record Added!
+                  </Subheading>
+                )}
               </View>
             </Surface>
-
+            {/* Expertise */}
             <Surface
               style={[
                 styles.shawdow,
-                { marginBottom: 30, padding: 7, borderRadius: 10 },
+                {
+                  marginBottom: 30,
+                  padding: 7,
+                  borderRadius: 10,
+                  marginHorizontal: 14,
+                },
               ]}
             >
               <View style={[styles.row, { alignItems: "center" }]}>
@@ -384,29 +438,42 @@ const DoctorProfile = () => {
               </View>
               <Divider style={{ height: 2 }} />
               <View style={[styles.row, { alignItems: "center" }]}>
-                {info?.record?.expertise?.map((service, i) => {
-                  return (
-                    <Chip
-                      key={i}
-                      mode="outlined"
-                      style={{
-                        margin: 7,
-                        borderColor: "#f50057",
-                        borderWidth: 1.5,
-                      }}
-                      textStyle={{ color: "#f50057" }}
-                    >
-                      {service}
-                    </Chip>
-                  );
-                })}
+                {info?.record?.expertise.length > 0 ? (
+                  info?.record?.expertise?.map((service, i) => {
+                    return (
+                      <Chip
+                        key={i}
+                        mode="outlined"
+                        style={{
+                          margin: 7,
+                          borderColor: "#f50057",
+                          borderWidth: 1.5,
+                        }}
+                        textStyle={{ color: "#f50057" }}
+                      >
+                        {service}
+                      </Chip>
+                    );
+                  })
+                ) : (
+                  <Subheading
+                    style={{ textAlign: "center", margin: 10, width: "100%" }}
+                  >
+                    No Record Added!
+                  </Subheading>
+                )}
               </View>
             </Surface>
-
+            {/* Work Experience */}
             <Surface
               style={[
                 styles.shawdow,
-                { marginBottom: 30, padding: 7, borderRadius: 10 },
+                {
+                  marginBottom: 30,
+                  padding: 7,
+                  borderRadius: 10,
+                  marginHorizontal: 14,
+                },
               ]}
             >
               <View style={[styles.row, { alignItems: "center" }]}>
@@ -420,35 +487,48 @@ const DoctorProfile = () => {
               </View>
               <Divider style={{ height: 2 }} />
               <View>
-                {info?.record?.workExperience?.map((item, i) => {
-                  return (
-                    <List.Item
-                      key={i}
-                      title={item.post}
-                      description={
-                        item.institute +
-                        " ~ " +
-                        item.starting_year +
-                        " - " +
-                        item.ending_year
-                      }
-                      left={() => (
-                        <Icon
-                          name="dot-single"
-                          type="entypo"
-                          color={paper.colors.text}
-                        />
-                      )}
-                    />
-                  );
-                })}
+                {info?.record?.workExperience.length > 0 ? (
+                  info?.record?.workExperience?.map((item, i) => {
+                    return (
+                      <List.Item
+                        key={i}
+                        title={item.post}
+                        description={
+                          item.institute +
+                          " ~ " +
+                          item.starting_year +
+                          " - " +
+                          item.ending_year
+                        }
+                        left={() => (
+                          <Icon
+                            name="dot-single"
+                            type="entypo"
+                            color={paper.colors.text}
+                          />
+                        )}
+                      />
+                    );
+                  })
+                ) : (
+                  <Subheading
+                    style={{ textAlign: "center", margin: 10, width: "100%" }}
+                  >
+                    No Record Added!
+                  </Subheading>
+                )}
               </View>
             </Surface>
-
+            {/* Qualification */}
             <Surface
               style={[
                 styles.shawdow,
-                { marginBottom: 30, padding: 7, borderRadius: 10 },
+                {
+                  marginBottom: 30,
+                  padding: 7,
+                  borderRadius: 10,
+                  marginHorizontal: 14,
+                },
               ]}
             >
               <View style={[styles.row, { alignItems: "center" }]}>
@@ -462,35 +542,48 @@ const DoctorProfile = () => {
               </View>
               <Divider style={{ height: 2 }} />
               <View>
-                {info?.record?.qualification?.map((item, i) => {
-                  return (
-                    <List.Item
-                      key={i}
-                      title={item.type}
-                      description={
-                        item.institute +
-                        " ~ " +
-                        item.starting_year +
-                        " - " +
-                        item.ending_year
-                      }
-                      left={() => (
-                        <Icon
-                          name="dot-single"
-                          type="entypo"
-                          color={paper.colors.text}
-                        />
-                      )}
-                    />
-                  );
-                })}
+                {info?.record?.qualification.length > 0 ? (
+                  info?.record?.qualification?.map((item, i) => {
+                    return (
+                      <List.Item
+                        key={i}
+                        title={item.type}
+                        description={
+                          item.institute +
+                          " ~ " +
+                          item.starting_year +
+                          " - " +
+                          item.ending_year
+                        }
+                        left={() => (
+                          <Icon
+                            name="dot-single"
+                            type="entypo"
+                            color={paper.colors.text}
+                          />
+                        )}
+                      />
+                    );
+                  })
+                ) : (
+                  <Subheading
+                    style={{ textAlign: "center", margin: 10, width: "100%" }}
+                  >
+                    No Record Added!
+                  </Subheading>
+                )}
               </View>
             </Surface>
-
+            {/* Publication */}
             <Surface
               style={[
                 styles.shawdow,
-                { marginBottom: 30, padding: 7, borderRadius: 10 },
+                {
+                  marginBottom: 30,
+                  padding: 7,
+                  borderRadius: 10,
+                  marginHorizontal: 14,
+                },
               ]}
             >
               <View style={[styles.row, { alignItems: "center" }]}>
@@ -503,28 +596,41 @@ const DoctorProfile = () => {
                 <Title>Doctor Publication</Title>
               </View>
               <Divider style={{ height: 2 }} />
-              {info?.record?.publications?.map((item, i) => {
-                return (
-                  <List.Item
-                    key={i}
-                    title={item.name}
-                    description={item.place + ", " + item.year}
-                    left={() => (
-                      <Icon
-                        name="dot-single"
-                        type="entypo"
-                        color={paper.colors.text}
-                      />
-                    )}
-                  />
-                );
-              })}
+              {info?.record?.publications.length > 0 ? (
+                info?.record?.publications?.map((item, i) => {
+                  return (
+                    <List.Item
+                      key={i}
+                      title={item.name}
+                      description={item.place + ", " + item.year}
+                      left={() => (
+                        <Icon
+                          name="dot-single"
+                          type="entypo"
+                          color={paper.colors.text}
+                        />
+                      )}
+                    />
+                  );
+                })
+              ) : (
+                <Subheading
+                  style={{ textAlign: "center", margin: 10, width: "100%" }}
+                >
+                  No Record Added!
+                </Subheading>
+              )}
             </Surface>
-
+            {/* Achievements */}
             <Surface
               style={[
                 styles.shawdow,
-                { marginBottom: 30, padding: 7, borderRadius: 10 },
+                {
+                  marginBottom: 30,
+                  padding: 7,
+                  borderRadius: 10,
+                  marginHorizontal: 14,
+                },
               ]}
             >
               <View style={[styles.row, { alignItems: "center" }]}>
@@ -537,28 +643,42 @@ const DoctorProfile = () => {
                 <Title>Doctor Achievements</Title>
               </View>
               <Divider style={{ height: 2 }} />
-              {info?.record?.achievements?.map((item, i) => {
-                return (
-                  <List.Item
-                    key={i}
-                    title={item.name + ", " + item.year + ", " + item.place}
-                    titleStyle={{ fontSize: 18 }}
-                    left={() => (
-                      <Icon
-                        name="dot-single"
-                        type="entypo"
-                        color={paper.colors.text}
-                      />
-                    )}
-                  />
-                );
-              })}
+              {info?.record?.achievements.length > 0 ? (
+                info?.record?.achievements?.map((item, i) => {
+                  return (
+                    <List.Item
+                      key={i}
+                      title={item.name + ", " + item.year + ", " + item.place}
+                      titleStyle={{ fontSize: 18 }}
+                      left={() => (
+                        <Icon
+                          name="dot-single"
+                          type="entypo"
+                          color={paper.colors.text}
+                        />
+                      )}
+                    />
+                  );
+                })
+              ) : (
+                <Subheading
+                  style={{ textAlign: "center", margin: 10, width: "100%" }}
+                >
+                  No Record Added!
+                </Subheading>
+              )}
             </Surface>
-
+            {/*Add Reviews */}
             <Surface
               style={[
                 styles.shawdow,
-                { marginBottom: 30, padding: 7, borderRadius: 10, flex: 1 },
+                {
+                  marginBottom: 30,
+                  padding: 7,
+                  borderRadius: 10,
+                  flex: 1,
+                  marginHorizontal: 14,
+                },
               ]}
             >
               <View style={[styles.row, { alignItems: "center" }]}>
@@ -618,11 +738,17 @@ const DoctorProfile = () => {
                 />
               </View>
             </Surface>
-
+            {/*Reviews */}
             <Surface
               style={[
                 styles.shawdow,
-                { marginBottom: 30, padding: 7, borderRadius: 10, flex: 1 },
+                {
+                  marginBottom: 30,
+                  padding: 7,
+                  borderRadius: 10,
+                  flex: 1,
+                  marginHorizontal: 14,
+                },
               ]}
             >
               <View style={[styles.row, { alignItems: "center" }]}>
@@ -636,9 +762,17 @@ const DoctorProfile = () => {
               </View>
               <Divider style={{ height: 2 }} />
               <View>
-                {info?.review?.review.map((item, i) => (
-                  <ReviewCard key={i} data={item} />
-                ))}
+                {info?.review?.review.length > 0 ? (
+                  info?.review?.review.map((item, i) => (
+                    <ReviewCard key={i} data={item} />
+                  ))
+                ) : (
+                  <Subheading
+                    style={{ textAlign: "center", margin: 10, width: "100%" }}
+                  >
+                    No Review Added!
+                  </Subheading>
+                )}
               </View>
             </Surface>
           </View>

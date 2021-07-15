@@ -1,30 +1,24 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as Font from "expo-font";
-//import * as SplashScreen from "expo-splash-screen";
+import * as SplashScreen from "expo-splash-screen";
 import * as React from "react";
-import { AppState, LogBox } from "react-native";
+import { AppState } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { USER_STATUS_IN, USER_STATUS_OUT } from "../redux/actions/UserActions";
-import {
-  ALL_DOC_SOCKET_UPDATE,
-  DOCTORS,
-  GET_DOC_ALL_INFORMATION,
-} from "../redux/actions/DoctorAction";
-import {
-  GET_LANGUAGE,
-  SET_LANGUAGE,
-  DEL_LANGUAGE,
-} from "../redux/actions/LanguageAction";
+import { GET_FAVORITE, USER_STATUS_IN } from "../redux/actions/UserActions";
+import { ALL_DOC_SOCKET_UPDATE } from "../redux/actions/DoctorAction";
+import { GET_LANGUAGE } from "../redux/actions/LanguageAction";
 import io from "socket.io-client";
 import NetInfo from "@react-native-community/netinfo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Toast } from "native-base";
-const status = io("https://sehat.herokuapp.com/status");
+import { SocketUrl } from "../config/Config";
+
+const status = io(SocketUrl + "/status");
+
 export default function useCachedResources() {
   const [isLoadingComplete, setLoadingComplete] = React.useState(true);
   const [connection, setConnection] = React.useState(true);
   const dispatch = useDispatch();
-  const ISLOGGED = useSelector((state) => state.User.ISLOGGED);
+  const IS_LOGGED = useSelector((state) => state.User.IS_LOGGED);
   const LANGUAGE_STATUS = useSelector((state) => state.Language.status);
 
   const User = async () => {
@@ -87,13 +81,14 @@ export default function useCachedResources() {
         // dispatch(USER_STATUS_OUT());
         // dispatch(DEL_LANGUAGE());
         dispatch(GET_LANGUAGE());
+        dispatch(GET_FAVORITE());
 
         status.on("status-update", _handleStatusChange);
 
         const unsubscribe = NetInfo.addEventListener(_handleInternetChange);
 
         AppState.addEventListener("change", _handleAppStateChange);
-        //  SplashScreen.preventAutoHideAsync();
+        SplashScreen.preventAutoHideAsync();
 
         // Load fonts
         await Font.loadAsync({
@@ -112,11 +107,6 @@ export default function useCachedResources() {
           ...Ionicons.font,
           "Bickham-Script": require("../assets/fonts/BickhamScriptPro-Regular.otf"),
         });
-        await Font.loadAsync({
-          Roboto: require("native-base/Fonts/Roboto.ttf"),
-          Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
-          ...Ionicons.font,
-        });
         return () => {
           AppState.removeEventListener("change", _handleAppStateChange);
           // Unsubscribe
@@ -126,15 +116,15 @@ export default function useCachedResources() {
         // We might want to provide this error information to an error reporting service
         alert("Error loading" + e.message);
       } finally {
+        SplashScreen.hideAsync();
         setTimeout(() => {
           setLoadingComplete(false);
         }, 5000);
-        // SplashScreen.hideAsync();
       }
     }
 
     loadResourcesAndDataAsync();
   }, []);
 
-  return [isLoadingComplete, ISLOGGED, LANGUAGE_STATUS, connection];
+  return [isLoadingComplete, IS_LOGGED, LANGUAGE_STATUS, connection];
 }

@@ -15,7 +15,6 @@ const AppointmentCard = ({ list, handelButton, role }) => {
                 rounded
                 size="large"
                 overlayContainerStyle={{ backgroundColor: "#009688" }}
-                onPress={() => console.log("Works!")}
                 activeOpacity={0.7}
                 containerStyle={{}}
                 title={list.fname[0]}
@@ -32,7 +31,6 @@ const AppointmentCard = ({ list, handelButton, role }) => {
                 rounded
                 size="large"
                 overlayContainerStyle={{ backgroundColor: "#009688" }}
-                onPress={() => console.log("Works!")}
                 activeOpacity={0.7}
                 containerStyle={{}}
                 title={list.fname[0]}

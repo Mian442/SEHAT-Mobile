@@ -13,7 +13,7 @@ const ReviewsScreen = () => {
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [list, setList] = useState(null);
-  const user = useSelector((state) => state.User.TOKKEN);
+  const user = useSelector((state) => state.User.TOKEN);
   const review = useSelector((state) => state.Doctor.review);
   const dispatch = useDispatch();
   const navigation = useNavigation();

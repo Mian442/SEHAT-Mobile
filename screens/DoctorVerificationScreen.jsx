@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Image } from "react-native-elements";
-import { Button, Paragraph, Text, Title, useTheme } from "react-native-paper";
+import { Button, Paragraph, Title, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import SavingModel from "../components/SavingModel";
 import { DOCTOR_VERIFICATION } from "../redux/actions/UserActions";
@@ -9,7 +9,7 @@ import { DOCTOR_VERIFICATION } from "../redux/actions/UserActions";
 const DoctorVerificationScreen = () => {
   const paper = useTheme();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.User.TOKKEN);
+  const user = useSelector((state) => state.User.TOKEN);
   const [model, setModel] = useState(false);
   const lists = [
     "Allergist",
@@ -94,7 +94,6 @@ const DoctorVerificationScreen = () => {
             mode="contained"
             color="#009688"
             onPress={() => {
-              console.log({ id: user._id, licenseNo: "asdasd987a9s70" });
               setModel(true);
               dispatch(
                 DOCTOR_VERIFICATION(

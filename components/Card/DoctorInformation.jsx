@@ -1,4 +1,4 @@
-import { Body, CardItem, Left, Right } from "native-base";
+import { HStack, Center } from "native-base";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Avatar, Icon } from "react-native-elements";
@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 
 const DoctorInformation = ({ info, handelButton }) => {
   const paper = useTheme();
-  const user = useSelector((state) => state.User.TOKKEN);
+  const user = useSelector((state) => state.User.TOKEN);
   const list = [
     {
       name: "Specialty",
@@ -48,102 +48,90 @@ const DoctorInformation = ({ info, handelButton }) => {
 
   const EnglishDisplay = (item) => {
     return (
-      <CardItem bordered style={{ backgroundColor: paper.colors.surface }}>
-        <Left>
+      <HStack
+        space={3}
+        alignItems="center"
+        style={{ backgroundColor: paper.colors.surface }}
+      >
+        <Center size={16} shadow={3}>
           <Icon name={item.icon} type={item.type} color={item.color} />
-        </Left>
-        <Body
-          style={{
-            flexGrow: 4,
-            alignSelf: "center",
-          }}
+        </Center>
+        <Center shadow={3}>
+          <Text>{item?.name}</Text>
+        </Center>
+        <Center
+          style={{ flexGrow: 1, alignItems: "flex-end", marginRight: 14 }}
+          shadow={3}
         >
-          <Text>{item.name}</Text>
-        </Body>
-        <Right
-          style={{
-            flexGrow: 6,
-            alignSelf: "center",
-          }}
-        >
-          <Text>{item.value}</Text>
-        </Right>
-      </CardItem>
+          <Text>{item?.value}</Text>
+        </Center>
+      </HStack>
     );
   };
 
   const UrduDisplay = (item) => {
     return (
-      <CardItem bordered style={{ backgroundColor: paper.colors.surface }}>
-        <Left
-          style={{
-            flexGrow: 6,
-            alignSelf: "center",
-          }}
+      <HStack
+        space={3}
+        alignItems="center"
+        style={{ backgroundColor: paper.colors.surface }}
+      >
+        <Center
+          style={{ flexGrow: 1, alignItems: "flex-start", marginLeft: 14 }}
+          shadow={3}
         >
-          <Text>{item.value}</Text>
-        </Left>
-        <Body style={{ alignSelf: "center", alignItems: "flex-end" }}>
-          <Text style={{ paddingLeft: 7, textAlign: "right" }}>
-            {item.name}
-          </Text>
-        </Body>
-        <Right>
+          <Text>{item?.value}</Text>
+        </Center>
+        <Center shadow={3}>
+          <Text>{item?.name}</Text>
+        </Center>
+        <Center size={16} shadow={3}>
           <Icon name={item.icon} type={item.type} color={item.color} />
-        </Right>
-      </CardItem>
+        </Center>
+      </HStack>
     );
   };
 
   return (
     <View style={{ flex: 1 }}>
       <Card style={{ margin: 10 }}>
-        <CardItem
-          style={{
-            backgroundColor: paper.colors.surface,
-          }}
+        <HStack
+          space={3}
+          alignItems="center"
+          style={{ backgroundColor: paper.colors.surface, padding: 10 }}
         >
-          <Left>
+          <Center shadow={3}>
             <Avatar
               rounded
               size="large"
               overlayContainerStyle={{ backgroundColor: "#009688" }}
-              onPress={() => console.log("Works!")}
               activeOpacity={0.7}
               containerStyle={{}}
-              title={user.fname[0]}
               source={
-                user?.pic === null
-                  ? user?.gender === "Male"
+                info?.user.pic === null
+                  ? info?.user.gender === "Male"
                     ? require(`../../assets/images/man.png`)
                     : require(`../../assets/images/woman.png`)
-                  : { uri: "data:image/jpeg;base64," + user?.pic }
+                  : { uri: "data:image/jpeg;base64," + info?.user.pic }
               }
             />
-          </Left>
-          <Body style={{ flexGrow: 1, justifyContent: "center" }}>
-            <Title>{user?.fname + " " + user?.lname}</Title>
-          </Body>
-        </CardItem>
+          </Center>
+          <Center shadow={3}>
+            <Title>{info?.user.fname + " " + info?.user.lname}</Title>
+          </Center>
+        </HStack>
       </Card>
       <Card style={{ margin: 10 }}>
-        <CardItem
-          header
-          bordered
-          style={{
-            backgroundColor: paper.colors.surface,
-          }}
-        >
-          <Card.Title
-            title="Doctor Profile"
-            titleStyle={{ alignSelf: "center" }}
-          />
-        </CardItem>
+        <Card.Title
+          title="Doctor Profile"
+          titleStyle={{ alignSelf: "center" }}
+        />
         <Divider />
         {list.map((item, i) => (
           <EnglishDisplay {...item} key={i} />
         ))}
       </Card>
+      <View style={{ height: 80 }}></View>
       <FAB
         style={styles.fab}
         icon={"pencil"}
@@ -159,8 +147,7 @@ export default DoctorInformation;
 const styles = StyleSheet.create({
   fab: {
     position: "absolute",
-    margin: 25,
-    right: 30,
-    bottom: 2,
+    right: 20,
+    bottom: 10,
   },
 });

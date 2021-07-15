@@ -45,7 +45,11 @@ export default function HomeScreen() {
       name: "blood-drop",
       type: "fontisto",
       color: "#ff1744",
-      text: vitals ? vitals.blood_pressure : "N/A",
+      text: vitals
+        ? vitals.blood_pressure
+          ? vitals.blood_pressure + " mmHg"
+          : "N/A"
+        : "N/A",
       texttype: "Blood Pressure",
     },
     // {
@@ -59,21 +63,29 @@ export default function HomeScreen() {
       name: "heart",
       type: "fontisto",
       color: "#f50057",
-      text: vitals ? vitals.heart_beat : "N/A",
+      text: vitals
+        ? vitals.heart_beat
+          ? vitals.heart_beat + " BPM"
+          : "N/A"
+        : "N/A",
       texttype: "Heart Beat",
     },
     {
       name: "scale-bathroom",
       type: "material-community",
       color: "#2196f3",
-      text: vitals ? vitals.weight : "N/A",
+      text: vitals ? (vitals.weight ? vitals.weight + " kg" : "N/A") : "N/A",
       texttype: "Weight",
     },
     {
       name: "cubes",
       type: "font-awesome-5",
       color: "#009688",
-      text: vitals ? vitals.blood_glucose : "N/A",
+      text: vitals
+        ? vitals.blood_glucose
+          ? vitals.blood_glucose + " mg/dl"
+          : "N/A"
+        : "N/A",
       texttype: "Blood Glucose",
     },
   ];

@@ -1,7 +1,7 @@
-import { Body, CardItem, Left, Right } from "native-base";
 import React, { createRef, useState } from "react";
+import { HStack, Center, Select, CheckIcon } from "native-base";
 import { ScrollView, TouchableOpacity } from "react-native";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { Avatar, Button, Icon, Overlay } from "react-native-elements";
 import {
   Card,
@@ -10,10 +10,7 @@ import {
   useTheme,
   Divider,
   TextInput,
-  Modal,
   ActivityIndicator,
-  Portal,
-  Provider,
 } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,7 +23,7 @@ import {
 const PersonalInfoInsertion = ({ info, handelButton }) => {
   const paper = useTheme();
   const { information } = useSelector((state) => state.Language.Lang);
-  const iseng = useSelector((state) => state.Language.ISENGLISH);
+  const is_eng = useSelector((state) => state.Language.IS_ENGLISH);
   const [show, setShow] = useState(false);
   const [visible, setVisible] = React.useState(false);
   const [Info, setInfo] = useState({
@@ -37,10 +34,10 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
     email: info?.user?.email,
     martial_status: info?.martial_status,
     date: info.user.dob,
-    image: info?.user?.pic,
+    pic: info?.user?.pic,
     visible: false,
     ph: info?.user?.ph?.toString(),
-    cnic: info?.cnic,
+    gender: info?.user?.gender,
     mode: "date",
   });
   const dispatch = useDispatch();
@@ -55,6 +52,9 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
       keytype: "next",
       value: Info.date,
       disabled: true,
+      component: "input",
+      index: 1,
+      keyboardType: "default",
     },
     {
       name: information.email,
@@ -66,6 +66,9 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
       keytype: "next",
       value: Info.email,
       disabled: true,
+      component: "input",
+      index: 2,
+      keyboardType: "default",
     },
     {
       name: information.ph,
@@ -77,6 +80,9 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
       keytype: "next",
       value: Info.ph,
       disabled: true,
+      component: "input",
+      index: 3,
+      keyboardType: "numeric",
     },
     {
       name: information.cnic,
@@ -88,6 +94,9 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
       blur: false,
       keytype: "next",
       disabled: false,
+      component: "input",
+      index: 4,
+      keyboardType: "numeric",
     },
     {
       name: information.address,
@@ -99,6 +108,37 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
       keytype: "next",
       value: Info.address,
       disabled: false,
+      component: "input",
+      index: 5,
+      keyboardType: "default",
+    },
+
+    {
+      name: information.height,
+      icon: "human-male-height",
+      type: "material-community",
+      color: "#ff3d00",
+      ref: createRef(),
+      blur: true,
+      keytype: "done",
+      value: Info.height,
+      disabled: false,
+      component: "input",
+      index: -1,
+      keyboardType: "numeric",
+    },
+    {
+      name: information.gender,
+      icon: "genderless",
+      type: "font-awesome",
+      color: "#009688",
+      ref: createRef(),
+      blur: false,
+      keytype: "next",
+      value: Info.gender,
+      disabled: false,
+      component: "select",
+      items: ["Male", "Female"],
     },
     {
       name: information.martial_status,
@@ -110,17 +150,8 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
       keytype: "next",
       value: Info.martial_status,
       disabled: false,
-    },
-    {
-      name: information.height,
-      icon: "human-male-height",
-      type: "material-community",
-      color: "#ff3d00",
-      ref: createRef(),
-      blur: false,
-      keytype: "next",
-      value: Info.height,
-      disabled: false,
+      component: "select",
+      items: ["Single", "Married"],
     },
     {
       name: information.blood,
@@ -132,6 +163,8 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
       keytype: "done",
       value: Info.blood,
       disabled: false,
+      component: "select",
+      items: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
     },
   ];
 
@@ -165,7 +198,7 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
         base64: true,
       });
       if (!result.cancelled) {
-        handeldata(result.base64, "image");
+        handeldata(result.base64, "pic");
         // toggleOverlay();
       }
     } catch (E) {
@@ -181,7 +214,7 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
         base64: true,
       });
       if (!result.cancelled) {
-        handeldata(result.base64, "image");
+        handeldata(result.base64, "pic");
       }
     } catch (E) {
       alert(E);
@@ -194,7 +227,7 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
     handeldata(currentDate, "date");
   };
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps="handled">
       {show && (
         <DateTimePicker
           locale="es"
@@ -209,12 +242,12 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
         />
       )}
       <Card style={{ margin: 10 }}>
-        <CardItem
-          style={{
-            backgroundColor: paper.colors.surface,
-          }}
+        <HStack
+          space={3}
+          alignItems="center"
+          style={{ backgroundColor: paper.colors.surface, padding: 10 }}
         >
-          <Left>
+          <Center shadow={3}>
             <Avatar
               rounded
               size="large"
@@ -222,18 +255,18 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
               activeOpacity={0.7}
               containerStyle={{}}
               source={
-                Info?.image === null
-                  ? info.gender === "Male"
+                Info.pic === null
+                  ? Info.gender === "Male"
                     ? require(`../../assets/images/man.png`)
                     : require(`../../assets/images/woman.png`)
-                  : { uri: "data:image/jpeg;base64," + Info.image }
+                  : { uri: "data:image/jpeg;base64," + Info.pic }
               }
             />
-          </Left>
-          <Body style={{ flexGrow: 1, justifyContent: "center" }}>
-            <Text>{info?.user.fname + " " + info?.user.lname}</Text>
-          </Body>
-          <Right style={{ flexGrow: 2 }}>
+          </Center>
+          <Center shadow={3}>
+            <Title>{info?.user.fname + " " + info?.user.lname}</Title>
+          </Center>
+          <Center shadow={3}>
             <Button
               icon={
                 <Icon
@@ -251,31 +284,24 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
               }}
               title="Upload Image"
             />
-          </Right>
-        </CardItem>
+          </Center>
+        </HStack>
       </Card>
       <Card style={{ margin: 10 }}>
-        <CardItem
-          header
-          bordered
-          style={{
-            backgroundColor: paper.colors.surface,
-          }}
-        >
-          <Card.Title
-            title={information.title}
-            titleStyle={{ alignSelf: "center" }}
-          />
-        </CardItem>
+        <Card.Title
+          title={information.title}
+          titleStyle={{ alignSelf: "center" }}
+        />
         <Divider />
         {list.map((item, i) =>
-          iseng ? (
-            <CardItem
+          is_eng ? (
+            <HStack
               key={i}
-              bordered
+              space={3}
+              alignItems="center"
               style={{ backgroundColor: paper.colors.surface }}
             >
-              <Left>
+              <Center size={16} shadow={3}>
                 {item.icon === "date" ? (
                   <TouchableOpacity onPress={showDatepicker}>
                     <Icon
@@ -287,16 +313,82 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
                 ) : (
                   <Icon name={item.icon} type={item.type} color={item.color} />
                 )}
-              </Left>
-              <Body
-                style={{
-                  flexGrow: 2,
-                  alignSelf: "center",
-                }}
+              </Center>
+              {item.component === "input" ? (
+                <TextInput
+                  label={item.name}
+                  style={{ flexGrow: 1, marginRight: 14 }}
+                  mode="outlined"
+                  dense
+                  value={
+                    item.icon === "date"
+                      ? new Date(item.value).toDateString()
+                      : item.value
+                  }
+                  onChangeText={(text) => {
+                    handeldata(
+                      text,
+                      item.name === "Phone" ? "ph" : item.name.toLowerCase()
+                    );
+                  }}
+                  disabled={item.disabled}
+                  ref={item.ref}
+                  onSubmitEditing={() => {
+                    item.index !== -1 && list[item.index].ref.current.focus();
+                  }}
+                  blurOnSubmit={item.blur}
+                  returnKeyType={item.keytype}
+                  keyboardType={item.keyboardType}
+                />
+              ) : (
+                <Select
+                  width="76%"
+                  selectedValue={item.value}
+                  minWidth={200}
+                  placeholder={item.name}
+                  onValueChange={(itemValue) =>
+                    handeldata(
+                      itemValue,
+                      item.name === "Martial Status"
+                        ? "martial_status"
+                        : item.name.toLowerCase()
+                    )
+                  }
+                  _selectedItem={{
+                    bg: "cyan.600",
+                    endIcon: <CheckIcon size={4} />,
+                  }}
+                >
+                  {item.items.map((value, i) => (
+                    <Select.Item key={i} label={value} value={value} />
+                  ))}
+                </Select>
+              )}
+              {item.name === "Height" && (
+                <Center
+                  style={{
+                    marginRight: 14,
+                  }}
+                  shadow={3}
+                >
+                  <Text style={{ fontSize: 18 }}>ft</Text>
+                </Center>
+              )}
+            </HStack>
+          ) : (
+            <HStack
+              key={i}
+              space={3}
+              alignItems="center"
+              style={{ backgroundColor: paper.colors.surface }}
+            >
+              <Center shadow={3}>
+                <Text>{item?.name}</Text>
+              </Center>
+              <Center
+                style={{ flexGrow: 1, alignItems: "flex-end", marginRight: 14 }}
+                shadow={3}
               >
-                <Text>{item.name}</Text>
-              </Body>
-              <Right style={{ flexGrow: 4, flexDirection: "row" }}>
                 <TextInput
                   label={item.name}
                   mode="outlined"
@@ -330,46 +422,9 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
                       : "default"
                   }
                 />
-              </Right>
-            </CardItem>
-          ) : (
-            <CardItem
-              bordered
-              style={{ backgroundColor: paper.colors.surface }}
-            >
-              <Left>
-                <TextInput
-                  label={item.name}
-                  value=""
-                  dense
-                  mode="outlined"
-                  style={{ flexGrow: 1 }}
-                  disabled={item.disabled}
-                  onChangeText={(text) => {
-                    handeldata(
-                      text,
-                      item.name === "Martial Status"
-                        ? "martial_status"
-                        : item.name === "Phone"
-                        ? "ph"
-                        : item.name.toLowerCase()
-                    );
-                  }}
-                  ref={item.ref}
-                  onSubmitEditing={() => {
-                    i + 1 !== 7 && list[i + 1].ref.current.focus();
-                  }}
-                  blurOnSubmit={item.blur}
-                  returnKeyType={item.keytype}
-                />
-              </Left>
-              <Body style={{ alignSelf: "center", alignItems: "flex-end" }}>
-                <Text style={{ paddingLeft: 7, textAlign: "right" }}>
-                  {item.name}
-                </Text>
-              </Body>
-              <Right>
-                {icon === "date" ? (
+              </Center>
+              <Center size={16} shadow={3}>
+                {item.icon === "date" ? (
                   <TouchableOpacity onPress={showDatepicker}>
                     <Icon
                       name={item.icon}
@@ -380,8 +435,8 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
                 ) : (
                   <Icon name={item.icon} type={item.type} color={item.color} />
                 )}
-              </Right>
-            </CardItem>
+              </Center>
+            </HStack>
           )
         )}
       </Card>
@@ -401,8 +456,9 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
             user: {
               dob: Info.date,
               email: Info.email,
-              pic: Info.image,
-              ph: parseInt(Info.ph),
+              pic: Info.pic,
+              ph: Info.ph,
+              gender: Info.gender,
             },
             information: {
               martial_status: Info.martial_status,
@@ -434,6 +490,15 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
         onPress={handelButton}
         buttonStyle={{ margin: 10, backgroundColor: paper.colors.error }}
         title="Close"
+        icon={
+          <Icon
+            name="close"
+            size={18}
+            color="#fff"
+            style={{ margin: 7 }}
+            type="font-awesome"
+          />
+        }
       />
       <Overlay
         isVisible={visible}

@@ -14,7 +14,7 @@ const InfoScreen = () => {
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const { information } = useSelector((state) => state.Language.Lang);
-  const user = useSelector((state) => state.User.TOKKEN);
+  const user = useSelector((state) => state.User.TOKEN);
   const info = useSelector((state) => state.User.info);
   const dispatch = useDispatch();
 

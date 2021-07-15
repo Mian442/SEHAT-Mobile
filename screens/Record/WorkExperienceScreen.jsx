@@ -5,24 +5,23 @@ import { Button, Icon } from "react-native-elements";
 import {
   Text,
   ActivityIndicator,
-  Card,
   Checkbox,
   Headline,
   List,
   TextInput,
   useTheme,
 } from "react-native-paper";
+import { HStack, Center } from "native-base";
 import randomColor from "randomcolor";
 import { TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { USER_INFORMATION } from "../../redux/actions/UserActions";
 import {
   DOC_ADD_WORK_EXPERIENCE,
   GET_DOC_RECORD,
 } from "../../redux/actions/DoctorAction";
 import SavingModel from "../../components/SavingModel";
-import { Toast } from "native-base";
+import { ERROR } from "../../redux/actions/MessageAction";
 
 const WorkExperienceScreen = () => {
   const paper = useTheme();
@@ -41,7 +40,7 @@ const WorkExperienceScreen = () => {
       icon: "user-graduate",
       type: "font-awesome-5",
       color: "#1de9b6",
-      value: data.type,
+      value: data.post,
       ref: createRef(),
       blur: false,
       keytype: "next",
@@ -106,7 +105,7 @@ const WorkExperienceScreen = () => {
     },
   ];
   const [loading, setLoading] = useState(false);
-  const user = useSelector((state) => state.User.TOKKEN);
+  const user = useSelector((state) => state.User.TOKEN);
   const info = useSelector((state) => state.User.info);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -130,19 +129,14 @@ const WorkExperienceScreen = () => {
     let a = [...workExperience];
     let flag = false;
     for (let i of a) {
-      if (i.type === data.type && i.institute === data.institute) {
+      if (
+        i.post === data.post &&
+        i.starting_year === data.starting_year &&
+        i.ending_year === data.ending_year &&
+        i.institute === data.institute
+      ) {
         flag = true;
-        Toast.show({
-          text: "Already Exists!",
-          style: {
-            margin: 20,
-            borderRadius: 25,
-            width: 180,
-            alignSelf: "center",
-            backgroundColor: paper.colors.onBackground,
-          },
-          textStyle: { textAlign: "center", color: paper.colors.surface },
-        });
+        dispatch(ERROR({ content: "Already Existed!", type: "error" }));
         break;
       }
     }
@@ -155,7 +149,7 @@ const WorkExperienceScreen = () => {
       setWorkExperience(a);
       setCheck(false);
       setData({
-        type: "",
+        post: "",
         starting_year: "",
         ending_year: "",
         institute: "",
@@ -189,45 +183,51 @@ const WorkExperienceScreen = () => {
             <Headline>Work Experience Details</Headline>
             {list.map((item, i) => {
               return (
-                <Card.Title
+                <HStack
                   key={i}
-                  title={item.name}
-                  left={(props) => (
+                  space={3}
+                  alignItems="center"
+                  style={{ backgroundColor: paper.colors.surface }}
+                >
+                  <Center size={16} shadow={3}>
                     <Icon
                       name={item.icon}
                       type={item.type}
                       color={item.color}
                     />
-                  )}
-                  rightStyle={{ width: 180 }}
-                  right={(props) => (
-                    <TextInput
-                      {...props}
-                      label={item.name}
-                      value={item.value}
-                      style={{ height: 30 }}
-                      onChangeText={item.change}
-                      ref={item.ref}
-                      onSubmitEditing={() => {
-                        i + 1 !== 4 && list[i + 1].ref.current.focus();
-                      }}
-                      keyboardType={item.keyboard}
-                      mode="outlined"
-                      blurOnSubmit={item.blur}
-                      returnKeyType={item.keytype}
-                      disabled={item.disabled}
-                    />
-                  )}
-                />
+                  </Center>
+                  <TextInput
+                    label={item.name}
+                    style={{ flexGrow: 1, marginRight: 14 }}
+                    mode="outlined"
+                    dense
+                    value={item.value}
+                    onChangeText={item.change}
+                    ref={item.ref}
+                    onSubmitEditing={() => {
+                      i + 1 !== 4 && list[i + 1].ref.current.focus();
+                    }}
+                    blurOnSubmit={item.blur}
+                    returnKeyType={item.keytype}
+                    keyboardType={item.keyboard}
+                    disabled={item.name === "Ending Year" && check}
+                  />
+                </HStack>
               );
             })}
             <TouchableOpacity
               style={{ alignSelf: "flex-end" }}
               onPress={() => {
+                if (!check) {
+                  let a = { ...data };
+                  a.ending_year = "" + new Date().getFullYear();
+                  setData(a);
+                } else {
+                  let a = { ...data };
+                  a.ending_year = "";
+                  setData(a);
+                }
                 setCheck(!check);
-                let a = { ...data };
-                a.ending_year = "" + new Date().getFullYear();
-                setData(a);
               }}
             >
               <View

@@ -1,146 +1,188 @@
 import { useNavigation } from "@react-navigation/native";
-import { Body, CardItem, Left, Right } from "native-base";
-import React, { useEffect } from "react";
+import moment from "moment";
+import { HStack, Center, VStack } from "native-base";
+import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Icon } from "react-native-elements";
-import { Button, Card, FAB, Text, Title, useTheme } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Card, FAB, Text, Title, useTheme } from "react-native-paper";
 import { useSelector } from "react-redux";
+import NoResult from "../NoResult";
 
 const MedicalHistoryCard = ({ id, medicalHistory, handelButton }) => {
   const navigation = useNavigation();
   const paper = useTheme();
   const { medical_history } = useSelector((state) => state.Language.Lang);
-  const iseng = useSelector((state) => state.Language.ISENGLISH);
+  const is_eng = useSelector((state) => state.Language.IS_ENGLISH);
 
-  const EnglishDisplay = () => {
+  let List = [
+    {
+      name: medical_history?.disease,
+      icon: "bacteria-outline",
+      color: "#4caf50",
+      type: "material-community",
+      value: medicalHistory?.disease ? medicalHistory?.disease : "N/A",
+    },
+    {
+      name: medical_history.symptom,
+      icon: "clipboard-list",
+      color: "#ab003c",
+      type: "font-awesome-5",
+      value:
+        medicalHistory?.symptom?.length > 0
+          ? medicalHistory?.symptom.map((item, i) => (
+              <VStack key={i} style={{}}>
+                <Center size={7}>
+                  {is_eng ? (
+                    <HStack style={{ marginRight: 14 }}>
+                      <Center>
+                        <Icon
+                          name="primitive-dot"
+                          size={12}
+                          type="octicon"
+                          color={paper.colors.text}
+                        />
+                      </Center>
+                      <Center size={16}>
+                        <Text>{item}</Text>
+                      </Center>
+                    </HStack>
+                  ) : (
+                    <HStack style={{ marginLeft: 14 }}>
+                      <Center size={16}>
+                        <Text>{item}</Text>
+                      </Center>
+                      <Center>
+                        <Icon
+                          name="primitive-dot"
+                          size={12}
+                          type="octicon"
+                          color={paper.colors.text}
+                        />
+                      </Center>
+                    </HStack>
+                  )}
+                </Center>
+              </VStack>
+            ))
+          : "N/A",
+    },
+    {
+      name: medical_history.category,
+      icon: "clipboard-pulse",
+      color: "#651fff",
+      type: "material-community",
+      value: medicalHistory?.category ? medicalHistory?.category : "N/A",
+    },
+    {
+      name: medical_history.treatment,
+      icon: "face",
+      color: "#d500f9",
+      type: "material-community",
+      value: medicalHistory?.treatment ? medicalHistory?.treatment : "N/A",
+    },
+    {
+      name: medical_history?.reaction,
+      icon: "solution1",
+      color: "#ff9100",
+      type: "antdesign",
+      value: medicalHistory?.reaction ? medicalHistory?.reaction : "N/A",
+    },
+  ];
+
+  const EnglishDisplay = (item) => {
     return (
       <View>
-        <View style={[styles.row]}>
-          <Icon
-            name="calendar-alt"
-            size={28}
-            type="font-awesome-5"
-            color="#ff1744"
-          />
-          <Text style={{ paddingLeft: 7, fontSize: 24, flexGrow: 3 }}>
-            {new Date(medicalHistory?.date).toDateString()}
-          </Text>
-          <Icon
-            name="edit"
-            size={28}
-            type="font-awesome-5"
-            color="#009688"
-            onPress={() =>
-              navigation.push("Edit Medical History", {
-                medicalHistory,
-                forEdit: true,
-                id,
-              })
-            }
-          />
-        </View>
+        <HStack
+          space={3}
+          alignItems="center"
+          style={{ backgroundColor: paper.colors.surface }}
+        >
+          <Center size={16} shadow={3}>
+            <Icon name="calendar-alt" type="font-awesome-5" color="#ff1744" />
+          </Center>
+          <Center shadow={3}>
+            <Title>{moment(medicalHistory?.date).format("MMM DD/YYYY ")}</Title>
+          </Center>
+          <Center
+            style={{ flexGrow: 1, alignItems: "flex-end", marginRight: 14 }}
+            shadow={3}
+          >
+            <Icon
+              name="edit-3"
+              type="feather"
+              color="#009688"
+              onPress={() =>
+                navigation.push("Edit Medical History", {
+                  medicalHistory,
+                  forEdit: true,
+                  id,
+                })
+              }
+            />
+          </Center>
+        </HStack>
+
         <View style={{ marginVertical: 5 }}>
           <Card>
-            <CardItem style={{ backgroundColor: paper.colors.background }}>
-              <Left>
-                <Icon
-                  name="bacteria-outline"
-                  type="material-community"
-                  color="#4caf50"
-                />
-                <Text style={{ paddingLeft: 7 }}>
-                  {medical_history?.disease}
-                </Text>
-              </Left>
-              <Right>
-                <Text>{medicalHistory?.disease}</Text>
-              </Right>
-            </CardItem>
-            <CardItem style={{ backgroundColor: paper.colors.background }}>
-              <Left>
-                <Icon
-                  name="clipboard-list"
-                  type="font-awesome-5"
-                  color="#ab003c"
-                />
-                <Text style={{ paddingLeft: 7 }}>
-                  {medical_history.symptom}
-                </Text>
-              </Left>
-              <Right>
-                {medicalHistory?.symptom &&
-                  medicalHistory?.symptom.map((item, i) => (
-                    <View style={styles.row} key={i}>
-                      <Text style={{ paddingRight: 7 }}>{item}</Text>
-                      <Icon
-                        name="primitive-dot"
-                        size={12}
-                        type="octicon"
-                        color={paper.colors.text}
-                      />
-                    </View>
-                  ))}
-              </Right>
-            </CardItem>
-            <CardItem style={{ backgroundColor: paper.colors.background }}>
-              <Left>
-                <Icon
-                  name="clipboard-pulse"
-                  type="material-community"
-                  color="#651fff"
-                />
-                <Text style={{ paddingLeft: 7 }}>
-                  {medical_history.category}
-                </Text>
-              </Left>
-              <Right>
-                <Text>{medicalHistory?.category}</Text>
-              </Right>
-            </CardItem>
-            <CardItem style={{ backgroundColor: paper.colors.background }}>
-              <Left>
-                <Icon name="face" type="material-community" color="#d500f9" />
-                <Text style={{ paddingLeft: 7 }}>Reaction</Text>
-              </Left>
-              <Right>
-                <Text>{medicalHistory?.reaction}</Text>
-              </Right>
-            </CardItem>
-            <CardItem style={{ backgroundColor: paper.colors.background }}>
-              <Left>
-                <Icon name="solution1" type="antdesign" color="#ff9100" />
-                <Text style={{ paddingLeft: 7 }}>
-                  {medical_history.treatment}
-                </Text>
-              </Left>
-              <Right>
-                <Text>{medicalHistory?.treatment}</Text>
-              </Right>
-            </CardItem>
+            {List.map((item, i) => (
+              <HStack
+                key={i}
+                space={3}
+                alignItems="center"
+                style={{ backgroundColor: paper.colors.surface }}
+              >
+                <Center size={16} shadow={3}>
+                  <Icon name={item.icon} type={item.type} color={item.color} />
+                </Center>
+                <Center shadow={3}>
+                  <Text>{item?.name}</Text>
+                </Center>
+                <Center
+                  style={{
+                    flexGrow: 1,
+                    alignItems: "flex-end",
+                    marginRight: 14,
+                  }}
+                  shadow={3}
+                >
+                  {item?.value}
+                </Center>
+              </HStack>
+            ))}
+
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate("Pictures", { pic: medicalHistory?.pic });
               }}
             >
-              <CardItem
-                bordered
-                style={{ backgroundColor: paper.colors.background }}
+              <HStack
+                space={3}
+                alignItems="center"
+                style={{ backgroundColor: paper.colors.surface }}
               >
-                <Left>
+                <Center size={16} shadow={3}>
                   <Icon name="md-image" type="ionicon" color="#00b0ff" />
-                </Left>
-                <Body style={{ flexGrow: 8 }}>
+                </Center>
+                <Center shadow={3}>
                   <Text>{medical_history.pic}</Text>
-                </Body>
-                <Right>
-                  <Icon
-                    name="ios-arrow-forward"
-                    type="ionicon"
-                    color={paper.colors.text}
-                  />
-                </Right>
-              </CardItem>
+                </Center>
+                <Center
+                  style={{
+                    flexGrow: 1,
+                    alignItems: "flex-end",
+                    marginRight: 14,
+                  }}
+                  shadow={3}
+                >
+                  <Text>
+                    <Icon
+                      name="ios-arrow-forward"
+                      type="ionicon"
+                      color={paper.colors.text}
+                    />
+                  </Text>
+                </Center>
+              </HStack>
             </TouchableOpacity>
           </Card>
         </View>
@@ -151,144 +193,94 @@ const MedicalHistoryCard = ({ id, medicalHistory, handelButton }) => {
   const UrduDisplay = () => {
     return (
       <View>
-        <View
-          style={[
-            styles.row,
-            { borderBottomWidth: 1, borderBottomColor: paper.colors.text },
-          ]}
+        <HStack
+          space={3}
+          alignItems="center"
+          style={{ backgroundColor: paper.colors.surface }}
         >
-          <Text
-            style={{
-              paddingRight: 7,
-              fontSize: 24,
-              flexGrow: 3,
-              textAlign: "right",
-            }}
+          <Center
+            style={{ flexGrow: 1, alignItems: "flex-start", marginLeft: 14 }}
+            shadow={3}
           >
-            {new Date(medicalHistory?.date).toDateString()}
-          </Text>
-          <Icon
-            name="calendar-alt"
-            size={28}
-            type="font-awesome-5"
-            color="#ff1744"
-          />
-        </View>
+            <Icon
+              name="edit-3"
+              type="feather"
+              color="#009688"
+              onPress={() =>
+                navigation.push("Edit Medical History", {
+                  medicalHistory,
+                  forEdit: true,
+                  id,
+                })
+              }
+            />
+          </Center>
+          <Center shadow={3}>
+            <Title>{moment(medicalHistory?.date).format("MMM DD/YYYY ")}</Title>
+          </Center>
+          <Center size={16} shadow={3}>
+            <Icon name="calendar-alt" type="font-awesome-5" color="#ff1744" />
+          </Center>
+        </HStack>
         <View style={{ marginVertical: 5 }}>
           <Card>
-            <CardItem style={{ backgroundColor: paper.colors.background }}>
-              <Left>
-                <Text>{medicalHistory?.disease}</Text>
-              </Left>
-              <Body style={{ alignItems: "flex-end" }}>
-                <Text>{medical_history.disease}</Text>
-              </Body>
-              <Right>
-                <Icon
-                  name="bacteria-outline"
-                  type="material-community"
-                  color="#4caf50"
-                />
-              </Right>
-            </CardItem>
-            <CardItem style={{ backgroundColor: paper.colors.background }}>
-              <Left
-                style={{ flexDirection: "column", alignItems: "flex-start" }}
+            {List.map((item, i) => (
+              <HStack
+                space={3}
+                alignItems="center"
+                style={{ backgroundColor: paper.colors.surface }}
               >
-                {medicalHistory?.symptom &&
-                  medicalHistory?.symptom.map((item, i) => (
-                    <View style={styles.row} key={i}>
-                      <Icon
-                        name="primitive-dot"
-                        size={12}
-                        type="octicon"
-                        color={paper.colors.text}
-                      />
-                      <Text style={{ paddingLeft: 7 }}>{item}</Text>
-                    </View>
-                  ))}
-              </Left>
-              <Body
-                style={{ alignItems: "flex-end", justifyContent: "center" }}
-              >
-                <Text style={{ paddingLeft: 7 }}>
-                  {medical_history.symptom}
-                </Text>
-              </Body>
-              <Right>
-                <Icon
-                  name="clipboard-list"
-                  type="font-awesome-5"
-                  color="#ab003c"
-                />
-              </Right>
-            </CardItem>
-            <CardItem style={{ backgroundColor: paper.colors.background }}>
-              <Left>
-                <Text>{medicalHistory?.symptom}</Text>
-              </Left>
-              <Body style={{ alignItems: "flex-end" }}>
-                <Text style={{ paddingLeft: 7 }}>
-                  {medical_history.category}
-                </Text>
-              </Body>
-              <Right>
-                <Icon
-                  name="clipboard-pulse"
-                  type="material-community"
-                  color="#651fff"
-                />
-              </Right>
-            </CardItem>
-            <CardItem style={{ backgroundColor: paper.colors.background }}>
-              <Left>
-                <Text>{medicalHistory?.reaction}</Text>
-              </Left>
-              <Body style={{ alignItems: "flex-end" }}>
-                <Text style={{ paddingLeft: 7 }}>
-                  {medical_history.reaction}
-                </Text>
-              </Body>
-              <Right>
-                <Icon name="face" type="material-community" color="#d500f9" />
-              </Right>
-            </CardItem>
-            <CardItem style={{ backgroundColor: paper.colors.background }}>
-              <Left>
-                <Text>{medicalHistory?.treatment}</Text>
-              </Left>
-              <Body style={{ alignItems: "flex-end" }}>
-                <Text style={{ paddingLeft: 7 }}>
-                  {medical_history.treatment}
-                </Text>
-              </Body>
-              <Right>
-                <Icon name="solution1" type="antdesign" color="#ff9100" />
-              </Right>
-            </CardItem>
+                <Center
+                  style={{
+                    flexGrow: 1,
+                    alignItems: "flex-start",
+                    marginLeft: 14,
+                  }}
+                  shadow={3}
+                >
+                  <Text>{item?.value}</Text>
+                </Center>
+                <Center shadow={3}>
+                  <Text>{item?.name}</Text>
+                </Center>
+                <Center size={16} shadow={3}>
+                  <Icon name={item.icon} type={item.type} color={item.color} />
+                </Center>
+              </HStack>
+            ))}
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate("Pictures", { pic: medicalHistory?.pic });
               }}
             >
-              <CardItem
-                bordered
-                style={{ backgroundColor: paper.colors.background }}
+              <HStack
+                space={3}
+                alignItems="center"
+                style={{ backgroundColor: paper.colors.surface }}
               >
-                <Left>
+                <Center size={16} shadow={3}>
                   <Icon
                     name="ios-arrow-back"
                     type="ionicon"
                     color={paper.colors.text}
                   />
-                </Left>
-                <Body style={{ alignItems: "flex-end" }}>
+                </Center>
+                <Center shadow={3}>
                   <Text>{medical_history.pic}</Text>
-                </Body>
-                <Right>
-                  <Icon name="md-image" type="ionicon" color="#00b0ff" />
-                </Right>
-              </CardItem>
+                </Center>
+                <Center
+                  style={{
+                    flexGrow: 1,
+                    alignItems: "flex-end",
+                    marginRight: 14,
+                  }}
+                  shadow={3}
+                >
+                  <Text>
+                    <Icon name="md-image" type="ionicon" color="#00b0ff" />
+                  </Text>
+                </Center>
+              </HStack>
             </TouchableOpacity>
           </Card>
         </View>
@@ -299,10 +291,11 @@ const MedicalHistoryCard = ({ id, medicalHistory, handelButton }) => {
   return (
     <View style={styles.container}>
       {medicalHistory ? (
-        <>{iseng ? <EnglishDisplay /> : <UrduDisplay />}</>
+        <>{is_eng ? <EnglishDisplay /> : <UrduDisplay />}</>
       ) : (
-        <Title style={{ textAlign: "center" }}>No History Available!</Title>
+        <NoResult />
       )}
+      <View style={{ height: 80 }}></View>
       <FAB
         style={styles.fab}
         icon="pencil"
@@ -328,7 +321,6 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: "absolute",
-    margin: 25,
     right: 0,
     bottom: 0,
   },

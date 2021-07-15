@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "SEHAT",
-    "slug": "SEHAT",
-    "version": "1.1.2",
+    "slug": "sehat",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/New/icon.png",
     "scheme": "myapp",
@@ -19,30 +19,29 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.mian442.SEHAT",
-      "buildNumber": "1.1.2"
+      "bundleIdentifier": "com.mian442.sehat",
+      "buildNumber": "1.0.0"
     },
     "web": {
       "favicon": "./assets/images/New/icon.png"
     },
     "android": {
-      "package": "com.mian442.SEHAT",
+      "package": "com.mian442.sehat",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/New/adaptive-icon.png",
-        "backgroundImage": "./assets/images/New/adaptive-icon.png"
+        "backgroundImage": "./assets/images/New/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
       },
+      "googleServicesFile": "./google-services.json",
       "icon": "./assets/images/New/icon.png",
       "backgroundColor": "#FFFFFF",
       "useNextNotificationsApi": true,
-      "versionCode": 1,
+      "versionCode": 2,
       "permissions": [
-        "ACCESS_FINE_LOCATION",
-        "ACCESS_BACKGROUND_LOCATION",
         "CAMERA",
         "READ_EXTERNAL_STORAGE",
         "AUDIO_RECORDING",
         "NOTIFICATIONS",
-        "LOCATION",
         "MEDIA_LIBRARY",
         "ACCESS_WIFI_STATE",
         "ACCESS_NETWORK_STATE"

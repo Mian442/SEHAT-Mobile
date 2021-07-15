@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import MedicalStatusCard from "../../components/Card/MedicalStatusCard";
 import MedicalStatusInsertion from "../../components/Insertion/MedicalStatusInsertion";
 import Loading from "../../components/Loading";
+import NoResult from "../../components/NoResult";
 import { USER_INFORMATION } from "../../redux/actions/UserActions";
 
 const MedicalHistoryScreen = () => {
@@ -16,7 +17,7 @@ const MedicalHistoryScreen = () => {
   const [loading, setLoading] = useState(false);
   const { medical_status } = useSelector((state) => state.Language.Lang);
   const info = useSelector((state) => state.User.info);
-  const user = useSelector((state) => state.User.TOKKEN);
+  const user = useSelector((state) => state.User.TOKEN);
   const dispatch = useDispatch();
   useEffect(() => {
     navigation.setOptions({ title: medical_status.title });
@@ -30,7 +31,6 @@ const MedicalHistoryScreen = () => {
       );
     });
   }, [medical_status, info]);
-
   if (!loading) {
     return <Loading />;
   } else
@@ -39,14 +39,19 @@ const MedicalHistoryScreen = () => {
         {!edit ? (
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{}}
+            keyboardShouldPersistTaps="handled"
           >
-            {info?.medicine_status?.map(
-              (item, i) =>
-                item.status && (
-                  <MedicalStatusCard key={i} data={item} id={user?._id} />
-                )
+            {info?.medicine_status ? (
+              info?.medicine_status?.map(
+                (item, i) =>
+                  item.status && (
+                    <MedicalStatusCard key={i} data={item} id={user?._id} />
+                  )
+              )
+            ) : (
+              <NoResult title="No Status Found" />
             )}
+            <View style={{ height: 80 }}></View>
           </ScrollView>
         ) : (
           <MedicalStatusInsertion
@@ -54,7 +59,6 @@ const MedicalHistoryScreen = () => {
             handelButton={() => setedit(!edit)}
           />
         )}
-        <View style={{ height: 80 }}></View>
         {!edit && (
           <FAB
             style={styles.fab}
@@ -73,8 +77,7 @@ export default MedicalHistoryScreen;
 const styles = StyleSheet.create({
   fab: {
     position: "absolute",
-    margin: 25,
-    right: 20,
-    bottom: 0,
+    right: 10,
+    bottom: 20,
   },
 });

@@ -1,7 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import {
-  Avatar,
   Title,
   Caption,
   Paragraph,
@@ -12,18 +11,19 @@ import {
   Divider,
 } from "react-native-paper";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
+import { HStack, Center, VStack } from "native-base";
 import { useDispatch, useSelector } from "react-redux";
-import { Icon } from "react-native-elements";
+import { Avatar, Icon } from "react-native-elements";
 import { SET_LANGUAGE } from "../redux/actions/LanguageAction";
 import { USER_STATUS_OUT } from "../redux/actions/UserActions";
 import { ScrollView } from "react-native";
 
 export default function DrawerContent(props) {
-  const iseng = useSelector((state) => state.Language.ISENGLISH);
+  const is_eng = useSelector((state) => state.Language.IS_ENGLISH);
   const { drawer } = useSelector((state) => state.Language.Lang);
-  const [isSwitchOn, setIsSwitchOn] = React.useState(iseng);
+  const [isSwitchOn, setIsSwitchOn] = React.useState(is_eng);
   const dispatch = useDispatch();
-  const User = useSelector((state) => state.User.TOKKEN);
+  const User = useSelector((state) => state.User.TOKEN);
   const list = [
     {
       name: drawer.home,
@@ -43,35 +43,23 @@ export default function DrawerContent(props) {
       type: "font-awesome",
       screen: "Category",
     },
+    // {
+    //   name: drawer.appointment,
+    //   icon: "md-bookmarks",
+    //   type: "ionicon",
+    //   screen: "Appointment",
+    // },
+    // {
+    //   name: drawer.support,
+    //   icon: "support",
+    //   type: "font-awesome",
+    //   screen: "Perception",
+    // },
     {
-      name: drawer.appointment,
-      icon: "md-bookmarks",
-      type: "ionicon",
-      screen: "Appointment",
-    },
-    {
-      name: drawer.medical_history,
-      icon: "history",
-      type: "font-awesome-5",
-      screen: "MedicalHistory",
-    },
-    {
-      name: drawer.vital,
-      icon: "activity",
-      type: "feather",
-      screen: "Vital",
-    },
-    {
-      name: drawer.medical_status,
-      icon: "linechart",
-      type: "antdesign",
-      screen: "MedicalStatus",
-    },
-    {
-      name: drawer.support,
-      icon: "support",
-      type: "font-awesome",
-      screen: "Perception",
+      name: drawer.advance,
+      icon: "list",
+      type: "entypo",
+      screen: "Advance",
     },
     {
       name: drawer.profile,
@@ -93,30 +81,36 @@ export default function DrawerContent(props) {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.drawerContent}>
             <View style={{ margin: 10 }}>
-              <View style={{ flexDirection: "row", marginTop: 15 }}>
-                <Avatar.Image
-                  source={require("../assets/images/man.png")}
-                  size={50}
-                />
-                <View style={{ marginLeft: 15, flexDirection: "column" }}>
-                  <Title style={styles.title}>{User.name}</Title>
-                  <Caption style={styles.caption}>@{User.role}</Caption>
-                </View>
-              </View>
-              <View style={styles.row}>
-                <View style={styles.section}>
-                  <Paragraph style={[styles.paragraph, styles.caption]}>
-                    80
-                  </Paragraph>
-                  <Caption style={styles.caption}>Following</Caption>
-                </View>
-                <View style={styles.section}>
-                  <Paragraph style={[styles.paragraph, styles.caption]}>
-                    100
-                  </Paragraph>
-                  <Caption style={styles.caption}>Followers</Caption>
-                </View>
-              </View>
+              <HStack space={3} alignItems="center" style={{ margin: 10 }}>
+                <Center size={16} shadow={3}>
+                  <Avatar
+                    rounded
+                    size={80}
+                    overlayContainerStyle={{ backgroundColor: "#009688" }}
+                    activeOpacity={0.7}
+                    containerStyle={{ alignSelf: "center" }}
+                    source={
+                      User?.pic === null
+                        ? User?.gender === "Male"
+                          ? require(`../assets/images/man.png`)
+                          : require(`../assets/images/woman.png`)
+                        : { uri: "data:image/jpeg;base64," + User?.pic }
+                    }
+                  />
+                </Center>
+                <VStack style={{ margin: 10 }}>
+                  <Center space={1}>
+                    <Title style={styles.title}>
+                      {User.fname} {User.lname}
+                    </Title>
+                  </Center>
+                  <Center space={1}>
+                    <Caption style={styles.caption}>
+                      @{User.role.includes("doctor") ? "Doctor" : "User"}
+                    </Caption>
+                  </Center>
+                </VStack>
+              </HStack>
             </View>
             <Divider style={{ backgroundColor: "gray", margin: 7 }} />
             <Drawer.Section style={styles.drawerSection} {...props}>
