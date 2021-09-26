@@ -36,14 +36,14 @@ export default function useCachedResources() {
         status.emit("online", {
           id: data._id,
           role: data.role,
-          name: data.fname,
+          name: data.name,
         });
       }
       if (nextAppState === "background" && data.role.includes("doctor")) {
         status.emit("offline", {
           id: data._id,
           role: data.role,
-          name: data.fname,
+          name: data.name,
         });
       }
     }
@@ -57,14 +57,14 @@ export default function useCachedResources() {
         status.emit("online", {
           id: data._id,
           role: data.role,
-          name: data.fname,
+          name: data.name,
         });
       }
       if (!state.isConnected && data.role.includes("doctor")) {
         status.emit("offline", {
           id: data._id,
           role: data.role,
-          name: data.fname,
+          name: data.name,
         });
       }
     }

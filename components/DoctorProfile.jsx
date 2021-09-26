@@ -90,7 +90,7 @@ const DoctorProfile = () => {
             />
             <View style={{ margin: 10 }}>
               <Card.Title
-                title={info?.user.fname}
+                title={info?.user.name}
                 titleStyle={{ color: "white" }}
                 subtitleStyle={{ color: "white" }}
                 subtitle={info?.specialty}
@@ -141,8 +141,7 @@ const DoctorProfile = () => {
                   onPress={() => {
                     navigation.navigate("BookAppointment", {
                       _id: info?._id,
-                      name: info?.user.fname,
-                      lname: info?.user.lname,
+                      name: info?.user.name,
                       pic: info?.user.pic,
                       gender: info?.user.gender,
                       specialty: info?.specialty,
@@ -212,7 +211,7 @@ const DoctorProfile = () => {
                   onPress={() =>
                     navigation.navigate("Chat", {
                       id: info._id,
-                      fname: info?.user.fname,
+                      name: info?.user.name,
                     })
                   }
                 /> */}
@@ -714,7 +713,7 @@ const DoctorProfile = () => {
                           review: {
                             ...review,
                             date: new Date(),
-                            user_name: User.fname + " " + User.lname,
+                            user_name: User.name,
                             gender: User.gender,
                             pic: User.pic,
                             userid: User._id,

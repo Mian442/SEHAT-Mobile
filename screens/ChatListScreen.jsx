@@ -36,7 +36,7 @@ const ChatListScreen = () => {
             containerStyle={{ backgroundColor: paper.colors.surface }}
             onPress={() =>
               navigation.navigate("Chat", {
-                name: item.user.fname,
+                name: item.user.name,
                 id: item.user._id,
                 role: item.user.role,
                 chat_id: item._id,
@@ -56,7 +56,7 @@ const ChatListScreen = () => {
             />
             <ListItem.Content>
               <ListItem.Title style={{ color: paper.colors.text }}>
-                {item.user.fname}
+                {item.user.name}
               </ListItem.Title>
               <ListItem.Subtitle style={{ color: paper.colors.text }}>
                 {item.text}

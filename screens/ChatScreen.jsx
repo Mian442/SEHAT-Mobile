@@ -241,7 +241,7 @@ const ChatScreen = () => {
                   isPrescription,
                   disease,
                   sender: {
-                    name: User.fname,
+                    name: User.name,
                     id: User._id,
                     time: new Date(),
                   },

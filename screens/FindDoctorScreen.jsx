@@ -56,8 +56,7 @@ const FindDoctorScreen = () => {
                   handelButton={() => {
                     navigation.navigate("BookAppointment", {
                       _id: item._id,
-                      fname: item.user.fname,
-                      lname: item.user.lname,
+                      name: item.user.name,
                       pic: item.user.pic,
                       gender: item.user.gender,
                       specialty: item.specialty,

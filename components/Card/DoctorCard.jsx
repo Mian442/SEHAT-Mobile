@@ -68,7 +68,7 @@ const DoctorCard = ({ list, handelButton }) => {
                 });
               }}
             >
-              {list.user.fname}
+              {list.user.name}
             </Text>
           }
           subtitle={list.specialty}
@@ -124,7 +124,7 @@ const DoctorCard = ({ list, handelButton }) => {
               style={styles.row}
               onPress={() => {
                 navigation.navigate("Chat", {
-                  name: list.user.fname,
+                  name: list.user.name,
                   id: list._id,
                   role: list.user.role,
                   from: "Card",

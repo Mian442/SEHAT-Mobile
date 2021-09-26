@@ -264,7 +264,7 @@ const PersonalInfoInsertion = ({ info, handelButton }) => {
             />
           </Center>
           <Center shadow={3}>
-            <Title>{info?.user.fname + " " + info?.user.lname}</Title>
+            <Title>{info?.user.name}</Title>
           </Center>
           <Center shadow={3}>
             <Button

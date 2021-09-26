@@ -100,9 +100,7 @@ export default function DrawerContent(props) {
                 </Center>
                 <VStack style={{ margin: 10 }}>
                   <Center space={1}>
-                    <Title style={styles.title}>
-                      {User.fname} {User.lname}
-                    </Title>
+                    <Title style={styles.title}>{User.name}</Title>
                   </Center>
                   <Center space={1}>
                     <Caption style={styles.caption}>

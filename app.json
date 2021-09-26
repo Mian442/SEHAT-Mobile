@@ -2,7 +2,7 @@
   "expo": {
     "name": "SEHAT",
     "slug": "sehat",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/New/icon.png",
     "scheme": "myapp",
@@ -20,7 +20,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.mian442.sehat",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.1"
     },
     "web": {
       "favicon": "./assets/images/New/icon.png"
@@ -36,7 +36,7 @@
       "icon": "./assets/images/New/icon.png",
       "backgroundColor": "#FFFFFF",
       "useNextNotificationsApi": true,
-      "versionCode": 2,
+      "versionCode": 4,
       "permissions": [
         "CAMERA",
         "READ_EXTERNAL_STORAGE",

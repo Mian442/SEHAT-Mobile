@@ -66,7 +66,7 @@ const FavoriteScreen = () => {
                   }
                 />
                 <Title style={{ flexGrow: 1, marginLeft: 12 }}>
-                  {item.user.fname}
+                  {item.user.name}
                 </Title>
                 <Icon
                   name="trash"
@@ -95,8 +95,7 @@ const FavoriteScreen = () => {
                 onPress={() => {
                   navigation.navigate("BookAppointment", {
                     _id: item._id,
-                    fname: item.user.fname,
-                    lname: item.user.lname,
+                    name: item.user.name,
                     pic: item.user.pic,
                     gender: item.user.gender,
                     specialty: item.specialty,

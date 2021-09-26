@@ -58,10 +58,15 @@ function Login({ props }) {
 
   async function handleOnLogin(values, actions) {
     let data;
-    if (phoneRegex.test(values.field)) {
-      data = { ...values, type: "ph" };
-    } else if (emailRegex.test(values.field)) {
-      data = { ...values, type: "email" };
+
+    let d = {
+      field: values.field.trim(),
+      password: values.password,
+    };
+    if (phoneRegex.test(d.field)) {
+      data = { ...d, type: "ph" };
+    } else if (emailRegex.test(d.field.toLowerCase())) {
+      data = { ...d, type: "email" };
     } else {
       dispatch(ERROR({ content: "Not a valid Identifier!", type: "error" }));
       actions.setSubmitting(false);

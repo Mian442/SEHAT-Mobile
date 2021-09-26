@@ -193,7 +193,7 @@ export default () => {
               color: "#fff",
             }}
           >
-            {User.fname}
+            {User.name}
           </Text>
         </View>
         <View

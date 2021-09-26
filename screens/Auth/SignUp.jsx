@@ -59,12 +59,12 @@ async function registerForPushNotificationsAsync() {
 const SignUp = () => {
   const notificationListener = useRef();
   const responseListener = useRef();
-  const [fname, setFname] = useState("");
-  const [lname, setLname] = useState("");
+  const [name, setName] = useState("");
   const [dob, setDOB] = useState("");
   const [ph, setPh] = useState("");
   const [email, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
+  const [cpassword, setCPassword] = useState("");
   const [token, setToken] = useState("");
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState("date");
@@ -75,10 +75,10 @@ const SignUp = () => {
   const paper = useTheme();
   const dispatch = useDispatch();
   const Lang = useSelector((state) => state.Language.Lang);
-  const LnametextInput = React.createRef();
-  const FnametextInput = React.createRef();
+  const NametextInput = React.createRef();
   const PhnametextInput = React.createRef();
   const passnametextInput = React.createRef();
+  const confrimpassnametextInput = React.createRef();
   const emailtextInput = React.createRef();
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
@@ -103,8 +103,7 @@ const SignUp = () => {
     };
   }, []);
   let schema = yup.object().shape({
-    fname: yup.string().required(),
-    lname: yup.string().required(),
+    name: yup.string().required(),
     ph: yup.string().required().min(10),
     dob: yup.date().required(),
     gender: yup.string().required(),
@@ -118,36 +117,40 @@ const SignUp = () => {
   }
 
   async function handleOnSignup() {
-    setLoading(true);
-    let data = {
-      fname,
-      lname,
-      ph,
-      dob,
-      gender,
-      email: email.toLowerCase(),
-      password,
-      token,
-    };
-    schema
-      .validate(data, { abortEarly: false })
-      .then((valid) => {
-        dispatch(
-          USER_STATUS_REGISTER(
-            {
-              ...valid,
-              pic: null,
-            },
-            () => {
-              setLoading(false);
-            }
-          )
-        );
-      })
-      .catch((err) => {
-        dispatch(ERROR({ content: err.errors[0], type: "error" }));
-        setLoading(false);
-      });
+    if (password === cpassword) {
+      setLoading(true);
+      let data = {
+        name,
+        ph,
+        dob,
+        gender,
+        email: email.trim().toLowerCase(),
+        password,
+        token,
+      };
+      schema
+        .validate(data, { abortEarly: false })
+        .then((valid) => {
+          console.log("focus");
+          dispatch(
+            USER_STATUS_REGISTER(
+              {
+                ...valid,
+                pic: null,
+              },
+              () => {
+                setLoading(false);
+              }
+            )
+          );
+        })
+        .catch((err) => {
+          dispatch(ERROR({ content: err.errors[0], type: "error" }));
+          setLoading(false);
+        });
+    } else {
+      dispatch(ERROR({ content: "Password not Matched!", type: "error" }));
+    }
   }
 
   const showDatepicker = () => {
@@ -166,59 +169,59 @@ const SignUp = () => {
 
   return (
     <View style={styles.Signup}>
-      <View style={{ marginTop: "8%" }}>
-        <TouchableOpacity
-          style={{ margin: 5 }}
-          onPress={() => {
-            navigation.navigate("Login");
-          }}
-        >
-          <Icon
-            name="md-arrow-back"
-            type="ionicon"
-            size={28}
-            style={{ margin: 8, alignSelf: "flex-start" }}
-            color="#fff"
-          />
-        </TouchableOpacity>
-      </View>
-      <View
-        style={{
-          marginTop: 20,
-        }}
-      >
-        <View
-          style={[
-            styles.shawdow,
-            {
-              borderRadius: 25,
-              alignSelf: "center",
-              margin: 3,
-              backgroundColor: "#82B1FF",
-            },
-          ]}
-        >
-          <Image
-            source={require("../../assets/images/website.png")}
-            style={{ width: 180, height: 180 }}
-            PlaceholderContent={<ActivityIndicator />}
-          />
-        </View>
-        <Text
-          style={{
-            alignSelf: "center",
-            fontSize: 46,
-            fontFamily: "Helvetica",
-            color: "#fff",
-          }}
-        >
-          {Lang.auth_sign_up.signup}
-        </Text>
-      </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        <View style={{ marginTop: "8%" }}>
+          <TouchableOpacity
+            style={{ margin: 5 }}
+            onPress={() => {
+              navigation.navigate("Login");
+            }}
+          >
+            <Icon
+              name="md-arrow-back"
+              type="ionicon"
+              size={28}
+              style={{ margin: 8, alignSelf: "flex-start" }}
+              color="#fff"
+            />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            marginTop: 20,
+          }}
+        >
+          <View
+            style={[
+              styles.shawdow,
+              {
+                borderRadius: 25,
+                alignSelf: "center",
+                margin: 3,
+                backgroundColor: "#82B1FF",
+              },
+            ]}
+          >
+            <Image
+              source={require("../../assets/images/website.png")}
+              style={{ width: 180, height: 180 }}
+              PlaceholderContent={<ActivityIndicator />}
+            />
+          </View>
+          <Text
+            style={{
+              alignSelf: "center",
+              fontSize: 46,
+              fontFamily: "Helvetica",
+              color: "#fff",
+            }}
+          >
+            {Lang.auth_sign_up.signup}
+          </Text>
+        </View>
         <KeyboardAvoidingView
         //contentContainerStyle={{ flex: 1 }}
         //behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -334,27 +337,14 @@ const SignUp = () => {
               </TouchableOpacity>
             </View>
             <Input
-              ref={FnametextInput}
+              ref={NametextInput}
               textContentType={"nameSuffix"}
               inputContainerStyle={styles.input}
-              placeholder={Lang.auth_sign_up.fname}
+              placeholder={Lang.auth_sign_up.name}
               returnKeyType="next"
-              value={fname}
-              onChangeText={(n) => setFname(n)}
-              onSubmitEditing={() => LnametextInput.current.focus()}
-              blurOnSubmit={false}
-              inputStyle={{ color: paper.colors.text }}
-            />
-            <Input
-              inputContainerStyle={styles.input}
-              placeholder={Lang.auth_sign_up.lname}
-              value={lname}
-              returnKeyType="next"
-              textContentType={"namePrefix"}
-              onChangeText={(n) => setLname(n)}
+              value={name}
+              onChangeText={(n) => setName(n)}
               onSubmitEditing={() => PhnametextInput.current.focus()}
-              ref={LnametextInput}
-              onBlur={() => LnametextInput.current.blur()}
               blurOnSubmit={false}
               inputStyle={{ color: paper.colors.text }}
             />
@@ -376,7 +366,7 @@ const SignUp = () => {
 
             <Input
               inputContainerStyle={styles.input}
-              placeholder={Lang.email}
+              placeholder={Lang.auth_sign_up.email}
               value={email}
               onChangeText={(n) => setEmailAddress(n)}
               textContentType={"emailAddress"}
@@ -393,6 +383,17 @@ const SignUp = () => {
               placeholder={Lang.pass}
               value={password}
               onChangeText={(n) => setPassword(n)}
+              textContentType={"password"}
+              secureTextEntry={true}
+              onSubmitEditing={() => confrimpassnametextInput.current.focus()}
+              inputStyle={{ color: paper.colors.text }}
+            />
+            <Input
+              ref={confrimpassnametextInput}
+              inputContainerStyle={styles.input}
+              placeholder={Lang.auth_sign_up.cpass}
+              value={cpassword}
+              onChangeText={(n) => setCPassword(n)}
               textContentType={"password"}
               secureTextEntry={true}
               inputStyle={{ color: paper.colors.text }}

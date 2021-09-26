@@ -17,7 +17,7 @@ const AppointmentCard = ({ list, handelButton, role }) => {
                 overlayContainerStyle={{ backgroundColor: "#009688" }}
                 activeOpacity={0.7}
                 containerStyle={{}}
-                title={list.fname[0]}
+                title={list.name[0]}
                 source={
                   list?.pic === null
                     ? list?.gender === "Male"
@@ -33,7 +33,7 @@ const AppointmentCard = ({ list, handelButton, role }) => {
                 overlayContainerStyle={{ backgroundColor: "#009688" }}
                 activeOpacity={0.7}
                 containerStyle={{}}
-                title={list.fname[0]}
+                title={list.name[0]}
                 source={
                   list?.pic === null
                     ? list?.gender === "Male"
@@ -44,7 +44,7 @@ const AppointmentCard = ({ list, handelButton, role }) => {
               />
             )
           }
-          title={list.fname + " " + list.lname}
+          title={list.name}
           subtitle={list.specialty}
           titleStyle={{ paddingLeft: 25 }}
           subtitleStyle={{ paddingLeft: 25 }}

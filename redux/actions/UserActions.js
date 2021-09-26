@@ -19,6 +19,7 @@ export const TOKEN = (payload) => ({
 
 export const USER_STATUS_REGISTER = (data, callback) => {
   return async (dispatch) => {
+    console.log("ff")
     await SEHAT.post("/auth/signup", data)
       .then((response) => {
         dispatch(USER(response.data));
@@ -154,8 +155,7 @@ export const USER_INFORMATION_UPDATE = (data, callback) => {
         dispatch(INFORMATION(response.data));
         let d = {
           pic: response.data.user.pic,
-          lname: response.data.user.lname,
-          fname: response.data.user.fname,
+          name: response.data.user.name,
           email: response.data.user.email,
           gender: response.data.user.gender,
           _id: response.data.user._id,

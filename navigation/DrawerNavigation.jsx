@@ -252,7 +252,6 @@ const StackNavigator = ({ navigation }) => {
 
 const DrawerNavigation = () => {
   const paper = useTheme();
-  console.log(paper);
   return (
     <Drawer.Navigator
       initialRouteName="Main"

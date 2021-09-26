@@ -10,11 +10,12 @@ const Urdu = {
   auth_sign_up: {
     signup: "اندراج",
     title: "عنوان",
-    fname: "پہلا نام درج کریں",
-    lname: "آخری نام درج کریں",
+    name: "پہلا نام درج کریں",
     ph: ".فون نمبر درج کریں",
     dob: "تاریخ پیدائش منتخب کریں",
     acc: "کیا آپ کا اکاؤنٹ ہے؟ لاگ ان کریں",
+    email: "ای میل درج کریں",
+    cpas: "پاس ورڈ کی تصدیق کریں۔",
   },
   drawer: {
     home: "صحت",
@@ -85,8 +86,8 @@ const Urdu = {
 
 const English = {
   app_name: "SEHAT",
-  email: "Enter email or Phone Number",
-  pass: "Enter password",
+  email: "Email or Phone Number",
+  pass: "Password",
   auth_login: {
     login: "Login",
     noacc: "Don't have an account? Sign Up",
@@ -95,11 +96,12 @@ const English = {
   auth_sign_up: {
     signup: "Registration",
     title: "Title:",
-    fname: "Enter First Name",
-    lname: "Enter Last Name",
-    ph: "Enter Phone No#",
+    name: "First Name",
+    ph: "Phone No#",
     dob: "Select Date of Birth",
     acc: "Have an account? Login",
+    email: "Email",
+    cpass: "Confirm Password",
   },
   drawer: {
     home: "Home",

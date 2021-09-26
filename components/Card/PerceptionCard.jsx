@@ -29,7 +29,7 @@ const PerceptionCard = ({ list }) => {
                 }
               />
             )}
-            title={list.user.fname}
+            title={list.user.name}
             subtitle={list.specialty}
             titleStyle={{ paddingLeft: 25 }}
             subtitleStyle={{ paddingLeft: 25 }}
