@@ -104,7 +104,7 @@ export default function DrawerContent(props) {
                   </Center>
                   <Center space={1}>
                     <Caption style={styles.caption}>
-                      @{User.role.includes("doctor") ? "Doctor" : "User"}
+                      {/* @{User?.role.includes("doctor") ? "Doctor" : "User"} */}
                     </Caption>
                   </Center>
                 </VStack>
